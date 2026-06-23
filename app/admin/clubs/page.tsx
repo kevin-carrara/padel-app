@@ -25,7 +25,7 @@ export default async function AdminClubsPage() {
       <nav style={{ background: '#004740' }}>
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           <span className="logo text-xl" style={{ color: '#FFFFFF' }}>
-            PadelBook
+            AJClubPadel
           </span>
           <span
             style={{

@@ -41,7 +41,7 @@ export default async function OnboardingPage() {
       <div className="mb-6 text-center">
         <div className="section-label">Configuración inicial</div>
         <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '2rem', fontWeight: 700, color: '#34252F' }}>
-          Bienvenido a PadelBook
+          Bienvenido a AJClubPadel
         </h1>
       </div>
       <OnboardingWizard

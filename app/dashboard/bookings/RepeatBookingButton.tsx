@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { PushPin, CalendarCheck } from '@phosphor-icons/react'
 
 interface RepeatBookingButtonProps {
   bookingId: string
@@ -60,24 +61,28 @@ export default function RepeatBookingButton({
     <>
       <button
         onClick={() => setOpen(true)}
-        title="Repetir cada semana"
+        title="Fijar turno recurrente"
         style={{
-          fontSize: '0.7rem',
+          display: 'flex', alignItems: 'center', gap: '6px',
+          fontSize: '0.78rem',
           fontFamily: 'var(--font-montserrat)',
           fontWeight: 700,
           color: '#004740',
           background: 'rgba(0,71,64,0.08)',
           border: '1px solid rgba(0,71,64,0.2)',
-          borderRadius: '6px',
-          padding: '3px 8px',
+          borderRadius: '8px',
+          padding: '0.5rem 0.875rem',
           cursor: 'pointer',
           transition: 'background 0.15s',
           whiteSpace: 'nowrap',
+          width: '100%',
+          justifyContent: 'center',
         }}
         onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,71,64,0.16)')}
         onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0,71,64,0.08)')}
       >
-        🔁 Fijar
+        <PushPin size={14} weight="fill" />
+        {' '}Fijar turno
       </button>
 
       {open && (
@@ -95,7 +100,9 @@ export default function RepeatBookingButton({
             {result ? (
               /* ── Success state ── */
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>📅</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+                  <CalendarCheck size={48} weight="duotone" color="#004740" />
+                </div>
                 <h2 style={{
                   fontFamily: 'var(--font-playfair)', fontSize: '1.4rem', fontWeight: 700,
                   color: '#004740', marginBottom: '0.5rem',

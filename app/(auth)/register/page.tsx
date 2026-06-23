@@ -53,7 +53,7 @@ export default function RegisterPage() {
 
         <div className="relative z-10 p-10">
           <Link href="/" className="logo text-2xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
-            PadelBook
+            AJClubPadel
           </Link>
         </div>
 
@@ -96,7 +96,7 @@ export default function RegisterPage() {
       <div className="flex-1 flex items-center justify-center px-6 py-12" style={{ background: '#EBE9DF' }}>
         <div className="w-full max-w-sm">
           <Link href="/" className="logo text-2xl block mb-10 lg:hidden" style={{ color: '#004740', textDecoration: 'none' }}>
-            PadelBook
+            AJClubPadel
           </Link>
 
           <div className="mb-8">

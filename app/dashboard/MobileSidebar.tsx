@@ -6,8 +6,7 @@ import { usePathname } from 'next/navigation'
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: '⊞' },
-  { href: '/dashboard/calendar', label: 'Calendario', icon: '📆' },
-  { href: '/dashboard/bookings', label: 'Reservas', icon: '📅' },
+  { href: '/dashboard/calendar', label: 'Calendario', icon: '📅' },
   { href: '/dashboard/courts', label: 'Canchas', icon: '🎾' },
   { href: '/dashboard/finances', label: 'Finanzas', icon: '💰' },
 ]
@@ -38,8 +37,12 @@ export default function MobileSidebar({ userName }: { userName: string }) {
         >
           ☰
         </button>
-        <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
-          PadelBook
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', textDecoration: 'none' }}>
+          <div style={{ width: '40px', height: '40px', background: '#FFFFFF', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/isotipo.png" alt="" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+          </div>
+          <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
         </Link>
         <Link
           href="/api/auth/signout"
@@ -83,8 +86,12 @@ export default function MobileSidebar({ userName }: { userName: string }) {
           className="flex items-center justify-between px-5 py-6"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
         >
-          <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
-            PadelBook
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', textDecoration: 'none' }}>
+            <div style={{ width: '44px', height: '44px', background: '#FFFFFF', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/isotipo.png" alt="AJClubPadel" style={{ width: '44px', height: '44px', objectFit: 'cover' }} />
+            </div>
+            <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
           </Link>
           <button
             onClick={() => setIsOpen(false)}

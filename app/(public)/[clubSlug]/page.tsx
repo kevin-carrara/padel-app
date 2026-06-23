@@ -1,7 +1,9 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { prisma } from '@/lib/db/prisma'
 import { notFound } from 'next/navigation'
-import { MapPin, Star, Award, ArrowRight } from 'lucide-react'
+import { MapPin, Medal } from '@phosphor-icons/react/dist/ssr'
+import PublicInlineBooking from './PublicInlineBooking'
+import { getClubCover } from '@/lib/club-image'
 
 export default async function ClubPublicPage({ params }: { params: Promise<{ clubSlug: string }> }) {
   const { clubSlug } = await params
@@ -20,12 +22,12 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center rounded-lg" style={{ width: '32px', height: '32px', background: '#AE552D', flexShrink: 0 }}>
-              <Award size={16} color="#FFFFFF" />
+              <Medal size={16} color="#FFFFFF" />
             </div>
-            <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>PadelBook</Link>
+            <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>AJClubPadel</Link>
           </div>
           <Link
-            href="/"
+            href="/clubes"
             className="btn btn-ghost btn-sm"
             style={{ color: 'rgba(255,255,255,0.75)', borderColor: 'rgba(255,255,255,0.2)', textDecoration: 'none' }}
           >
@@ -37,7 +39,7 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
       {/* HERO */}
       <section className="relative overflow-hidden" style={{ minHeight: '320px', display: 'flex', alignItems: 'flex-end', paddingBottom: '3rem' }}>
         <img
-          src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=1600"
+          src={getClubCover(club.slug, club.logoUrl)}
           alt=""
           referrerPolicy="no-referrer"
           loading="lazy"
@@ -137,7 +139,7 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
               )}
             </div>
 
-            {/* Sticky CTA */}
+            {/* Inline Booking */}
             <div>
               <div
                 className="sticky top-6"
@@ -150,23 +152,16 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
                   padding: '1.5rem',
                 }}
               >
-                <div className="section-label mb-2">Reservar ahora</div>
-                <div className="flex items-center gap-1 mb-3">
-                  {[1,2,3,4,5].map(s => (
-                    <Star key={s} size={14} fill="#f59e0b" color="#f59e0b" />
-                  ))}
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(52,37,47,0.5)', marginLeft: '0.25rem', fontFamily: 'var(--font-inter)' }}>4.9</span>
-                </div>
-                <p style={{ fontSize: '0.875rem', color: 'rgba(52,37,47,0.6)', lineHeight: 1.65, marginBottom: '1.25rem', fontFamily: 'var(--font-inter)' }}>
-                  Elegí tu cancha y horario en segundos. Sin llamadas, sin espera.
-                </p>
-                <Link
-                  href={`/${club.slug}/book`}
-                  className="btn btn-primary"
-                  style={{ width: '100%', justifyContent: 'center', display: 'flex', gap: '0.5rem' }}
-                >
-                  Elegir horario <ArrowRight size={16} />
-                </Link>
+                <PublicInlineBooking
+                  courts={club.courts.map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    surface: c.surface,
+                    isIndoor: c.isIndoor,
+                    pricePerHour: Number(c.pricePerHour),
+                  }))}
+                  clubId={club.id}
+                />
               </div>
             </div>
           </div>
@@ -177,10 +172,11 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
       <footer style={{ background: '#34252F' }}>
         <div className="max-w-5xl mx-auto px-5 py-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center rounded-lg" style={{ width: '28px', height: '28px', background: '#AE552D', flexShrink: 0 }}>
-              <Award size={14} color="#FFFFFF" />
+            <div style={{ width: '28px', height: '28px', background: '#FFFFFF', borderRadius: '6px', overflow: 'hidden', flexShrink: 0 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/isotipo.png" alt="" style={{ width: '28px', height: '28px', objectFit: 'cover' }} />
             </div>
-            <span className="logo text-lg" style={{ color: 'rgba(255,255,255,0.45)' }}>PadelBook</span>
+            <span className="logo text-lg" style={{ color: 'rgba(255,255,255,0.45)' }}>AJClubPadel</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', textDecoration: 'none', fontFamily: 'var(--font-montserrat)', fontWeight: 600 }}>

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import Link from 'next/link'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { CaretDown, CaretUp } from '@phosphor-icons/react/dist/ssr'
 
 const DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 
@@ -241,7 +241,7 @@ export default function CourtsList({ courts: initial, clubId }: { courts: Court[
                     className="btn btn-ghost btn-sm"
                     style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem' }}
                   >
-                    Configurar horarios {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    Configurar horarios {isExpanded ? <CaretUp size={14} /> : <CaretDown size={14} />}
                   </button>
                 </div>
               </div>

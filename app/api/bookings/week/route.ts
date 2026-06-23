@@ -12,17 +12,26 @@ export async function GET(req: NextRequest) {
     if (!profile?.clubId) return NextResponse.json({ error: 'No club found' }, { status: 400 })
 
     const dateParam = req.nextUrl.searchParams.get('date')
-    const refDate = dateParam ? new Date(dateParam) : new Date()
 
-    // Compute Monday of the week containing refDate
-    const day = refDate.getDay() // 0=Sun, 1=Mon, ...
-    const diffToMonday = (day === 0 ? -6 : 1 - day)
-    const weekStart = new Date(refDate)
-    weekStart.setDate(refDate.getDate() + diffToMonday)
-    weekStart.setHours(0, 0, 0, 0)
+    // Parse YYYY-MM-DD purely in UTC to avoid server-local-timezone shifting
+    let refDateStr: string
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      refDateStr = dateParam
+    } else {
+      // Today in ART (UTC-3)
+      refDateStr = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    }
 
-    const weekEnd = new Date(weekStart)
-    weekEnd.setDate(weekStart.getDate() + 7)
+    const [ry, rm, rd] = refDateStr.split('-').map(Number)
+    // Use noon UTC so day-of-week is stable regardless of server timezone
+    const refUtc = new Date(Date.UTC(ry, rm - 1, rd, 12))
+
+    const dow = refUtc.getUTCDay() // 0=Sun, 1=Mon, ...
+    const diffToMonday = dow === 0 ? -6 : 1 - dow
+
+    // Week boundaries in pure UTC midnight
+    const weekStart = new Date(Date.UTC(ry, rm - 1, rd + diffToMonday, 0, 0, 0, 0))
+    const weekEnd   = new Date(Date.UTC(ry, rm - 1, rd + diffToMonday + 7, 0, 0, 0, 0))
 
     const bookings = await prisma.booking.findMany({
       where: {
@@ -36,12 +45,14 @@ export async function GET(req: NextRequest) {
     const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
     const days = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(weekStart)
-      d.setDate(weekStart.getDate() + i)
-      const dateStr = d.toISOString().split('T')[0]
+      // Build each day's UTC date string directly
+      const dayUtc = new Date(Date.UTC(ry, rm - 1, rd + diffToMonday + i, 12))
+      const dateStr = dayUtc.toISOString().slice(0, 10)
+      const dayNum  = dayUtc.getUTCDate()
+
       const dayBookings = bookings.filter(b => {
-        const bDate = new Date(b.startTime).toISOString().split('T')[0]
-        return bDate === dateStr
+        // Compare using UTC ISO date string (no timezone ambiguity)
+        return b.startTime.toISOString().slice(0, 10) === dateStr
       }).map(b => ({
         ...b,
         amount: Number(b.amount),
@@ -52,13 +63,13 @@ export async function GET(req: NextRequest) {
 
       return {
         date: dateStr,
-        label: `${dayLabels[i]} ${d.getDate()}`,
+        label: `${dayLabels[i]} ${dayNum}`,
         bookings: dayBookings,
       }
     })
 
     return NextResponse.json({
-      weekStart: weekStart.toISOString().split('T')[0],
+      weekStart: weekStart.toISOString().slice(0, 10),
       days,
     })
   } catch (err) {

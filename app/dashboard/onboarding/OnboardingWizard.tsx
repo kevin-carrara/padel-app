@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Check } from 'lucide-react'
+import { Check } from '@phosphor-icons/react/dist/ssr'
 
 const DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 
@@ -242,7 +242,7 @@ export default function OnboardingWizard({ userId, existingClubId, existingClubN
                   <label className="label">URL pública</label>
                   <div className="flex items-center" style={{ background: '#EBE9DF', borderRadius: '0.5rem', padding: '0 0.75rem', border: '1px solid rgba(52,37,47,0.15)' }}>
                     <span style={{ fontSize: '0.8rem', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-inter)', whiteSpace: 'nowrap' }}>
-                      padelbook.com/
+                      AJClubPadel.com/
                     </span>
                     <input
                       className="input"

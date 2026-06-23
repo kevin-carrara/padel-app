@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
-import { CheckCircle, Clock, CreditCard, MapPin, ArrowLeft, Check } from 'lucide-react'
+import { CheckCircle, Clock, CreditCard, MapPin, ArrowLeft, Check } from '@phosphor-icons/react/dist/ssr'
 
 type CourtOption = { id: string; name: string }
 type TimeSlot = { start: string; end: string; available: boolean; price: number }

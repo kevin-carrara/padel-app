@@ -32,7 +32,7 @@ export default async function PublicBookPage({
       <nav style={{ background: '#004740' }}>
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
-            PadelBook
+            AJClubPadel
           </Link>
           <Link
             href={`/${club.slug}`}

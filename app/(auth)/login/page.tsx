@@ -43,7 +43,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 p-10">
           <Link href="/" className="logo text-2xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
-            PadelBook
+            AJClubPadel
           </Link>
         </div>
 
@@ -60,7 +60,7 @@ export default function LoginPage() {
                 marginBottom: '1rem',
               }}
             >
-              "La cancha perfecta, a un clic."
+              "Gestiona tu club, a un click."
             </p>
             <footer
               style={{
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 fontFamily: 'var(--font-montserrat)',
               }}
             >
-              PadelBook · Monte Cristo
+              AJClubPadel 
             </footer>
           </blockquote>
         </div>
@@ -89,7 +89,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <Link href="/" className="logo text-2xl block mb-10 lg:hidden" style={{ color: '#004740', textDecoration: 'none' }}>
-            PadelBook
+            AJClubPadel
           </Link>
 
           <div className="mb-8">

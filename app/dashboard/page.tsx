@@ -2,7 +2,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { TrendingUp, Calendar, DollarSign, ArrowRight } from 'lucide-react'
+import { TrendUp, CalendarBlank, CurrencyDollar, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import CancelBookingButton from './bookings/CancelBookingButton'
 
 export const dynamic = 'force-dynamic'
@@ -47,7 +47,7 @@ export default async function DashboardPage() {
       <div className="card p-10 text-center anim-up">
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏟️</div>
         <h2 style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.5rem', fontWeight: 800, color: '#34252F', marginBottom: '0.75rem' }}>
-          ¡Bienvenido a PadelBook!
+          ¡Bienvenido a AJClubPadel!
         </h2>
         <p style={{ color: 'rgba(52,37,47,0.55)', fontFamily: 'var(--font-inter)', marginBottom: '2rem', maxWidth: '400px', margin: '0 auto 2rem' }}>
           Configurá tu club en 3 pasos para empezar a recibir reservas.
@@ -97,7 +97,7 @@ export default async function DashboardPage() {
         <div className="card stat-card-accent p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="rounded-xl flex items-center justify-center" style={{ width: '40px', height: '40px', background: 'rgba(0,71,64,0.08)' }}>
-              <Calendar size={20} color="#004740" />
+              <CalendarBlank size={20} color="#004740" />
             </div>
             <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}>
               Hoy
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
         <div className="card p-5" style={{ borderLeft: '4px solid #AE552D', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
           <div className="flex items-center justify-between mb-4">
             <div className="rounded-xl flex items-center justify-center" style={{ width: '40px', height: '40px', background: 'rgba(174,85,45,0.08)' }}>
-              <DollarSign size={20} color="#AE552D" />
+              <CurrencyDollar size={20} color="#AE552D" />
             </div>
             <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}>
               Este mes
@@ -133,7 +133,7 @@ export default async function DashboardPage() {
         <div className="card stat-card-accent p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="rounded-xl flex items-center justify-center" style={{ width: '40px', height: '40px', background: 'rgba(0,71,64,0.08)' }}>
-              <TrendingUp size={20} color="#004740" />
+              <TrendUp size={20} color="#004740" />
             </div>
             <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}>
               Ocupación
@@ -151,8 +151,8 @@ export default async function DashboardPage() {
       {/* Quick actions */}
       <div className="flex flex-wrap gap-3 mb-8">
         <Link href="/dashboard/bookings/new" className="btn btn-primary">+ Nueva reserva</Link>
-        <Link href="/dashboard/bookings" className="btn btn-secondary">
-          Ver reservas <ArrowRight size={16} />
+        <Link href="/dashboard/calendar" className="btn btn-secondary">
+          Ver calendario <ArrowRight size={16} />
         </Link>
         <Link href={`/${club.slug}`} target="_blank" className="btn btn-ghost">Ver página pública</Link>
       </div>

@@ -3,9 +3,13 @@ import { TimeSlot } from '@/types'
 
 type TimeRange = { startTime: Date; endTime: Date }
 
+// All times in Argentina (UTC-3). Append offset so Node.js creates correct UTC timestamps.
+const TZ_OFFSET = '-03:00'
+
 export async function getAvailableSlots(courtId: string, date: string): Promise<TimeSlot[]> {
-  const targetDate = new Date(date)
-  const dayOfWeek = targetDate.getDay()
+  // Parse date parts to get correct local day of week for Argentina
+  const [y, m, d] = date.split('-').map(Number)
+  const dayOfWeek = new Date(y, m - 1, d).getDay() // local server day (UTC) matches the date string
 
   const [schedule, court, existingBookings, blocks] = await Promise.all([
     prisma.courtSchedule.findFirst({ where: { courtId, dayOfWeek } }),
@@ -15,8 +19,8 @@ export async function getAvailableSlots(courtId: string, date: string): Promise<
         courtId,
         status: { not: 'cancelled' },
         startTime: {
-          gte: new Date(`${date}T00:00:00`),
-          lt: new Date(`${date}T23:59:59`),
+          gte: new Date(`${date}T00:00:00${TZ_OFFSET}`),
+          lt: new Date(`${date}T23:59:59${TZ_OFFSET}`),
         },
       },
       select: { startTime: true, endTime: true },
@@ -24,8 +28,8 @@ export async function getAvailableSlots(courtId: string, date: string): Promise<
     prisma.courtBlock.findMany({
       where: {
         courtId,
-        startTime: { lt: new Date(`${date}T23:59:59`) },
-        endTime: { gt: new Date(`${date}T00:00:00`) },
+        startTime: { lt: new Date(`${date}T23:59:59${TZ_OFFSET}`) },
+        endTime: { gt: new Date(`${date}T00:00:00${TZ_OFFSET}`) },
       },
       select: { startTime: true, endTime: true },
     }),
@@ -50,8 +54,9 @@ export async function getAvailableSlots(courtId: string, date: string): Promise<
     const endMins = endMin % 60
     const endStr = `${String(endH).padStart(2, '0')}:${String(endMins).padStart(2, '0')}`
 
-    const slotStart = new Date(`${date}T${startStr}:00`)
-    const slotEnd = new Date(`${date}T${endStr}:00`)
+    // Interpret slot times in Argentina timezone (UTC-3) so isPast is correct
+    const slotStart = new Date(`${date}T${startStr}:00${TZ_OFFSET}`)
+    const slotEnd = new Date(`${date}T${endStr}:00${TZ_OFFSET}`)
 
     const isBooked = typedBookings.some(
       (b: TimeRange) => b.startTime < slotEnd && b.endTime > slotStart

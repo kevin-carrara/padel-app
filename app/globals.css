@@ -300,10 +300,11 @@
    LOGO
 ═══════════════════════════════════════ */
 .logo {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-weight: 700;
-  font-style: italic;
-  letter-spacing: -0.01em;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
 }

@@ -1,5 +1,5 @@
 ﻿import type { Metadata } from 'next'
-import { Playfair_Display, Montserrat, Inter } from 'next/font/google'
+import { Playfair_Display, Montserrat, Inter, Raleway } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
@@ -22,14 +22,20 @@ const inter = Inter({
   weight: ['400', '500', '600'],
 })
 
+const raleway = Raleway({
+  variable: '--font-raleway',
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+})
+
 export const metadata: Metadata = {
-  title: { default: 'PadelBook', template: '%s | PadelBook' },
+  title: { default: 'AJClubPadel', template: '%s | AJClubPadel' },
   description: 'Reserva tu cancha de padel en segundos.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${playfair.variable} ${montserrat.variable} ${inter.variable} h-full antialiased`}>
+    <html lang="es" className={`${playfair.variable} ${montserrat.variable} ${inter.variable} ${raleway.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#EBE9DF] text-[#34252F]">
         {children}
         <Toaster
