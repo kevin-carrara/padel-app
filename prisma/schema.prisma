@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum SubscriptionStatus {
+  trial
+  active
+  inactive
+  suspended
+}
+
+enum UserRole {
+  superadmin
+  club_admin
+  receptionist
+  player
+}
+
+enum BookingStatus {
+  confirmed
+  cancelled
+  no_show
+  completed
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  refunded
+}
+
+enum PaymentMethod {
+  cash
+  mp
+  transfer
+}
+
+enum CourtSurface {
+  cristal
+  moqueta
+  cemento
+}
+
+model Club {
+  id                 String             @id @default(uuid())
+  name               String
+  slug               String             @unique
+  address            String?
+  phone              String?
+  logoUrl            String?
+  timezone           String             @default("America/Argentina/Cordoba")
+  subscriptionStatus SubscriptionStatus @default(trial)
+  trialEndsAt        DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  profiles Profile[]
+  courts   Court[]
+  bookings Booking[]
+
+  @@map("clubs")
+}
+
+model Profile {
+  id        String   @id
+  clubId    String?
+  role      UserRole @default(player)
+  fullName  String?
+  phone     String?
+  avatarUrl String?
+  isBlocked Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  club            Club?        @relation(fields: [clubId], references: [id])
+  bookings        Booking[]    @relation("PlayerBookings")
+  createdBookings Booking[]    @relation("CreatedByBookings")
+  courtBlocks     CourtBlock[]
+
+  @@map("profiles")
+}
+
+model Court {
+  id           String       @id @default(uuid())
+  clubId       String
+  name         String
+  surface      CourtSurface @default(cristal)
+  isIndoor     Boolean      @default(false)
+  isActive     Boolean      @default(true)
+  pricePerHour Decimal      @db.Decimal(10, 2)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  club      Club            @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  schedules CourtSchedule[]
+  blocks    CourtBlock[]
+  bookings  Booking[]
+
+  @@map("courts")
+}
+
+model CourtSchedule {
+  id           String   @id @default(uuid())
+  courtId      String
+  dayOfWeek    Int
+  openTime     String
+  closeTime    String
+  slotDuration Int      @default(60)
+  createdAt    DateTime @default(now())
+
+  court Court @relation(fields: [courtId], references: [id], onDelete: Cascade)
+
+  @@map("court_schedules")
+}
+
+model CourtBlock {
+  id          String   @id @default(uuid())
+  courtId     String
+  startTime   DateTime
+  endTime     DateTime
+  reason      String?
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  court     Court    @relation(fields: [courtId], references: [id], onDelete: Cascade)
+  createdBy Profile? @relation(fields: [createdById], references: [id])
+
+  @@map("court_blocks")
+}
+
+model Booking {
+  id            String         @id @default(uuid())
+  clubId        String
+  courtId       String
+  playerId      String?
+  playerName    String
+  playerPhone   String?
+  startTime     DateTime
+  endTime       DateTime
+  durationMin   Int
+  amount        Decimal        @db.Decimal(10, 2)
+  status        BookingStatus  @default(confirmed)
+  paymentStatus PaymentStatus  @default(pending)
+  paymentMethod PaymentMethod?
+  notes         String?
+  createdById   String?
+  cancelledAt   DateTime?
+  cancelReason  String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  club      Club     @relation(fields: [clubId], references: [id])
+  court     Court    @relation(fields: [courtId], references: [id])
+  player    Profile? @relation("PlayerBookings", fields: [playerId], references: [id])
+  createdBy Profile? @relation("CreatedByBookings", fields: [createdById], references: [id])
+
+  @@index([clubId, startTime])
+  @@index([courtId, startTime])
+  @@index([playerId])
+  @@index([status])
+  @@map("bookings")
+}

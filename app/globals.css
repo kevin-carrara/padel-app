@@ -1,0 +1,469 @@
+﻿@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-montserrat);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.667);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+}
+
+/* ═══════════════════════════════════════
+   ATHLETIC HERITAGE — Design Tokens
+   Paleta: Racing Green / Sand / Cognac / Hickory
+═══════════════════════════════════════ */
+:root {
+  /* Racing Green */
+  --racing-green:        #004740;
+  --racing-green-dark:   #003530;
+  --racing-green-light:  #005a52;
+  --racing-green-bg:     rgba(0,71,64,0.06);
+  --racing-green-border: rgba(0,71,64,0.15);
+
+  /* Sand */
+  --sand:        #EBE9DF;
+  --sand-dark:   #d8d5c8;
+  --sand-border: rgba(235,233,223,0.8);
+
+  /* Cognac */
+  --cognac:        #AE552D;
+  --cognac-dark:   #93451f;
+  --cognac-bg:     rgba(174,85,45,0.08);
+  --cognac-border: rgba(174,85,45,0.2);
+
+  /* Hickory */
+  --hickory:        #34252F;
+  --hickory-mid:    rgba(52,37,47,0.6);
+  --hickory-muted:  rgba(52,37,47,0.4);
+  --hickory-border: rgba(52,37,47,0.08);
+
+  --white: #FFFFFF;
+
+  /* Backward compat font aliases */
+  --font-outfit:  var(--font-montserrat);
+  --font-dm-sans: var(--font-inter);
+
+  /* Shadcn token mapping */
+  --background:           var(--sand);
+  --foreground:           var(--hickory);
+  --card:                 var(--white);
+  --card-foreground:      var(--hickory);
+  --primary:              var(--racing-green);
+  --primary-foreground:   #FFFFFF;
+  --secondary:            var(--sand-dark);
+  --secondary-foreground: var(--hickory);
+  --muted:                rgba(235,233,223,0.6);
+  --muted-foreground:     var(--hickory-muted);
+  --accent:               var(--cognac);
+  --accent-foreground:    #FFFFFF;
+  --destructive:          #c0392b;
+  --border:               var(--hickory-border);
+  --input:                var(--white);
+  --ring:                 var(--racing-green);
+  --radius:               0.75rem;
+
+  /* Sidebar */
+  --sidebar:                  var(--racing-green);
+  --sidebar-foreground:       rgba(255,255,255,0.9);
+  --sidebar-primary:          var(--cognac);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:           rgba(255,255,255,0.08);
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border:           rgba(255,255,255,0.08);
+  --sidebar-ring:             var(--cognac);
+}
+
+/* ─── Base ─── */
+@layer base {
+  * {
+    @apply border-[rgba(52,37,47,0.08)] outline-none;
+  }
+
+  body {
+    background-color: var(--sand);
+    color: var(--hickory);
+    font-family: var(--font-inter), 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-montserrat), var(--font-inter), sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--hickory);
+  }
+}
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+.card {
+  background: #FFFFFF;
+  border: 1px solid rgba(52,37,47,0.08);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(52,37,47,0.04);
+}
+
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 8px 28px rgba(52,37,47,0.1);
+  border-color: rgba(0,71,64,0.18);
+  transform: translateY(-2px);
+}
+
+/* Court card: Racing Green top accent */
+.card-court {
+  background: #FFFFFF;
+  border: 1px solid rgba(52,37,47,0.08);
+  border-radius: 20px;
+  border-top: 4px solid var(--racing-green);
+  box-shadow: 0 4px 12px rgba(52,37,47,0.04);
+}
+
+/* CTA/sticky card: Racing Green top accent */
+.card-accent {
+  border-top: 4px solid var(--racing-green) !important;
+}
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  padding: 0.625rem 1.375rem;
+  border-radius: 9999px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* Primary = Cognac CTA */
+.btn-primary {
+  background: var(--cognac);
+  color: #FFFFFF;
+}
+.btn-primary:hover { background: var(--cognac-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(174,85,45,0.3); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Secondary = Racing Green */
+.btn-secondary {
+  background: var(--racing-green);
+  color: #FFFFFF;
+}
+.btn-secondary:hover { background: var(--racing-green-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,71,64,0.3); }
+.btn-secondary:active { transform: translateY(0); }
+.btn-secondary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Ghost = Hickory border */
+.btn-ghost {
+  background: transparent;
+  color: var(--hickory);
+  border: 1.5px solid rgba(52,37,47,0.2);
+}
+.btn-ghost:hover { background: rgba(52,37,47,0.04); border-color: rgba(52,37,47,0.35); color: var(--hickory); }
+
+/* Outline = Racing Green border (legacy compat) */
+.btn-outline {
+  background: transparent;
+  color: var(--racing-green);
+  border: 1.5px solid var(--racing-green-border);
+}
+.btn-outline:hover { background: var(--racing-green-bg); border-color: var(--racing-green); }
+
+/* Yellow alias → Cognac */
+.btn-yellow { background: var(--cognac); color: #FFFFFF; }
+.btn-yellow:hover { background: var(--cognac-dark); transform: translateY(-1px); }
+.btn-yellow:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Teal alias → Racing Green */
+.btn-teal { background: var(--racing-green); color: #FFFFFF; }
+.btn-teal:hover { background: var(--racing-green-dark); transform: translateY(-1px); }
+
+.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
+.btn-lg { padding: 0.8rem 1.75rem; font-size: 1rem; }
+
+/* ═══════════════════════════════════════
+   INPUTS
+═══════════════════════════════════════ */
+.input, .form-input {
+  display: block;
+  width: 100%;
+  background: #FFFFFF;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius-md);
+  color: var(--hickory);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.925rem;
+  padding: 0.625rem 0.875rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+.input::placeholder, .form-input::placeholder { color: var(--hickory-muted); }
+.input:focus, .form-input:focus {
+  border-color: var(--racing-green);
+  box-shadow: 0 0 0 3px rgba(0,71,64,0.1);
+}
+
+.label, .form-label {
+  display: block;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+  font-size: 0.775rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hickory-mid);
+  margin-bottom: 0.4rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════
+   BADGES
+═══════════════════════════════════════ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+}
+
+/* Racing Green badge (primary brand) */
+.badge-racing, .badge-teal {
+  background: var(--racing-green-bg);
+  color: var(--racing-green-dark);
+  border: 1px solid var(--racing-green-border);
+}
+
+/* Cognac badge */
+.badge-cognac, .badge-yellow {
+  background: var(--cognac-bg);
+  color: var(--cognac-dark);
+  border: 1px solid var(--cognac-border);
+}
+
+.badge-green   { background: rgba(22,163,74,0.1); color: #15803d; border: 1px solid rgba(22,163,74,0.25); }
+.badge-red     { background: rgba(192,57,43,0.1); color: #a93226; border: 1px solid rgba(192,57,43,0.25); }
+.badge-beige   { background: var(--sand); color: var(--hickory-mid); border: 1px solid var(--sand-dark); }
+.badge-outline { background: transparent; color: var(--hickory-muted); border: 1px solid rgba(52,37,47,0.2); }
+
+/* ═══════════════════════════════════════
+   LOGO
+═══════════════════════════════════════ */
+.logo {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Legacy logo-slash — invisible, no-op */
+.logo-slash { display: none; }
+
+/* ═══════════════════════════════════════
+   SECTION LABEL
+═══════════════════════════════════════ */
+.section-label {
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--racing-green);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--cognac);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   STAT CARD ACCENT
+═══════════════════════════════════════ */
+.stat-card-accent {
+  border-left: 4px solid var(--racing-green) !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+/* ═══════════════════════════════════════
+   NET / TEXTURE PATTERNS
+═══════════════════════════════════════ */
+.net-texture {
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 24px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 24px);
+}
+
+/* Legacy diagonal stripes — redefined as subtle racing-green texture */
+.diagonal-stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(0,71,64,0.025) 0px,
+    rgba(0,71,64,0.025) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+}
+.diagonal-stripe-yellow { /* legacy no-op */ }
+.diagonal-cut    { clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+.diagonal-cut-sm { clip-path: polygon(0 0, 100% 0, 100% 93%, 0 100%); }
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes racketFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-16px); }
+}
+
+.anim-up { animation: slideUp 0.55s cubic-bezier(0.16,1,0.3,1) both; opacity: 0; }
+.anim-in { animation: fadeIn  0.4s ease both; opacity: 0; }
+
+.racket-float { animation: racketFloat 4s ease-in-out infinite; }
+
+.d-100 { animation-delay: 100ms; }
+.d-150 { animation-delay: 150ms; }
+.d-200 { animation-delay: 200ms; }
+.d-250 { animation-delay: 250ms; }
+.d-300 { animation-delay: 300ms; }
+.d-400 { animation-delay: 400ms; }
+.d-500 { animation-delay: 500ms; }
+.d-600 { animation-delay: 600ms; }
+
+/* ═══════════════════════════════════════
+   NAV ITEMS
+═══════════════════════════════════════ */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.6rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.65);
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.08);
+  color: #FFFFFF;
+}
+
+/* ═══════════════════════════════════════
+   TABLE ROW
+═══════════════════════════════════════ */
+.table-row {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid rgba(52,37,47,0.08);
+  transition: background 0.1s;
+}
+.table-row:last-child { border-bottom: none; }
+.table-row:hover { background: rgba(235,233,223,0.5); }
+
+/* Generic hover-row: use instead of onMouseEnter/onMouseLeave in RSC */
+.row-hover { transition: background 0.1s; }
+.row-hover:hover { background: rgba(235,233,223,0.5); }
+
+/* ═══════════════════════════════════════
+   FOCUS VISIBLE — Accessibility
+═══════════════════════════════════════ */
+:focus-visible {
+  outline: 2.5px solid var(--racing-green);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+button:focus-visible, a:focus-visible { border-radius: var(--radius-md); }
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--sand); }
+::-webkit-scrollbar-thumb { background: var(--sand-dark); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--racing-green); }
+
+/* ═══════════════════════════════════════
+   SKELETON LOADING
+═══════════════════════════════════════ */
+.skeleton {
+  background: linear-gradient(90deg, rgba(52,37,47,0.06) 25%, rgba(52,37,47,0.12) 50%, rgba(52,37,47,0.06) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
