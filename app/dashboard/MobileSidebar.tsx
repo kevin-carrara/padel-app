@@ -44,12 +44,12 @@ export default function MobileSidebar({ userName }: { userName: string }) {
           </div>
           <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
         </Link>
-        <Link
-          href="/api/auth/signout"
-          style={{ color: '#AE552D', fontSize: '0.75rem', fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-montserrat)' }}
+        <button
+          onClick={async () => { await fetch('/api/auth/signout', { method: 'POST' }); window.location.href = '/login' }}
+          style={{ color: '#AE552D', fontSize: '0.75rem', fontWeight: 600, fontFamily: 'var(--font-montserrat)', background: 'none', border: 'none', cursor: 'pointer' }}
         >
           Salir ↩
-        </Link>
+        </button>
       </header>
 
       {/* Overlay */}
@@ -155,19 +155,20 @@ export default function MobileSidebar({ userName }: { userName: string }) {
 
         {/* Sign out */}
         <div className="px-3 pb-6">
-          <Link
-            href="/api/auth/signout"
+          <button
+            onClick={async () => { await fetch('/api/auth/signout', { method: 'POST' }); window.location.href = '/login' }}
             className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm"
             style={{
               color: '#AE552D',
-              textDecoration: 'none',
               fontFamily: 'var(--font-montserrat)',
               fontWeight: 600,
-              transition: 'color 0.15s',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
             }}
           >
             <span>↩</span> Salir
-          </Link>
+          </button>
         </div>
       </aside>
     </>

@@ -124,43 +124,60 @@ export default function DashboardNav() {
       <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.5rem 0' }} />
 
       {/* Sign out */}
-      <Link
-        href="/api/auth/signout"
+      <SignOutButton />
+    </nav>
+  )
+}
+
+function SignOutButton() {
+  async function handleSignOut() {
+    await fetch('/api/auth/signout', { method: 'POST' })
+    window.location.href = '/login'
+  }
+
+  return (
+    <button
+      onClick={handleSignOut}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        padding: '0.65rem 0.75rem',
+        borderRadius: '12px',
+        textDecoration: 'none',
+        borderLeft: '3px solid transparent',
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        width: '100%',
+        borderLeft2: '3px solid transparent',
+      } as React.CSSProperties}
+    >
+      <div
         style={{
+          width: '34px',
+          height: '34px',
+          borderRadius: '9px',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.75rem',
-          padding: '0.65rem 0.75rem',
-          borderRadius: '12px',
-          textDecoration: 'none',
-          borderLeft: '3px solid transparent',
+          justifyContent: 'center',
+          flexShrink: 0,
+          background: 'rgba(255,255,255,0.05)',
         }}
       >
-        <div
-          style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '9px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            background: 'rgba(255,255,255,0.05)',
-          }}
-        >
-          <SignOut size={18} weight="regular" color="rgba(174,85,45,0.6)" />
-        </div>
-        <p
-          style={{
-            fontFamily: 'var(--font-montserrat)',
-            fontWeight: 600,
-            fontSize: '0.8rem',
-            color: 'rgba(174,85,45,0.7)',
-          }}
-        >
-          Salir
-        </p>
-      </Link>
-    </nav>
+        <SignOut size={18} weight="regular" color="rgba(174,85,45,0.6)" />
+      </div>
+      <p
+        style={{
+          fontFamily: 'var(--font-montserrat)',
+          fontWeight: 600,
+          fontSize: '0.8rem',
+          color: 'rgba(174,85,45,0.7)',
+          margin: 0,
+        }}
+      >
+        Salir
+      </p>
+    </button>
   )
 }
