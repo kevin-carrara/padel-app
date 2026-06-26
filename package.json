@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "prisma generate",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@phosphor-icons/react": "^2.1.10",
     "@prisma/client": "^6.18.0",
     "@sentry/nextjs": "^10.58.0",

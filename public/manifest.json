@@ -1,0 +1,37 @@
+{
+  "name": "AJClubPadel",
+  "short_name": "AJClubPadel",
+  "description": "Reservá tu cancha de pádel en segundos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#004740",
+  "theme_color": "#004740",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/isotipo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/isotipo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Reservar cancha",
+      "url": "/clubes",
+      "description": "Ver clubes y reservar"
+    },
+    {
+      "name": "Mi panel",
+      "url": "/dashboard",
+      "description": "Panel de administración"
+    }
+  ],
+  "categories": ["sports", "lifestyle"]
+}

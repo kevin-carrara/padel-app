@@ -31,6 +31,14 @@ const raleway = Raleway({
 export const metadata: Metadata = {
   title: { default: 'AJClubPadel', template: '%s | AJClubPadel' },
   description: 'Reserva tu cancha de padel en segundos.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'AJClubPadel',
+  },
+  formatDetection: { telephone: false },
+  themeColor: '#004740',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
