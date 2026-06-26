@@ -4,6 +4,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import type { TimeSlot } from '@/types'
+import {
+  CourtBasketball,
+  CalendarDots,
+  User,
+  CalendarBlank,
+  Timer,
+  Racquet,
+} from '@phosphor-icons/react'
 
 type CourtOption = {
   id: string
@@ -136,8 +144,10 @@ export default function NewBookingForm({ courts }: { courts: CourtOption[] }) {
 
       {/* ── STEP 1: Court selector ── */}
       <div className="card p-5">
-        <p className="label" style={{ marginBottom: '1rem' }}>
-          <span style={{ background: '#004740', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, marginRight: '0.5rem' }}>1</span>
+        <p className="label" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ background: '#004740', borderRadius: '8px', width: '26px', height: '26px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CourtBasketball size={14} color="#fff" weight="fill" />
+          </span>
           Elegí la cancha
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.75rem' }}>
@@ -170,8 +180,10 @@ export default function NewBookingForm({ courts }: { courts: CourtOption[] }) {
 
       {/* ── STEP 2: Date + Duration + Slots ── */}
       <div className="card p-5">
-        <p className="label" style={{ marginBottom: '1rem' }}>
-          <span style={{ background: '#004740', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, marginRight: '0.5rem' }}>2</span>
+        <p className="label" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ background: '#004740', borderRadius: '8px', width: '26px', height: '26px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CalendarDots size={14} color="#fff" weight="fill" />
+          </span>
           Fecha y horario
         </p>
 
@@ -325,8 +337,10 @@ export default function NewBookingForm({ courts }: { courts: CourtOption[] }) {
 
       {/* ── STEP 3: Player info + summary ── */}
       <div className="card p-5">
-        <p className="label" style={{ marginBottom: '1rem' }}>
-          <span style={{ background: '#004740', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, marginRight: '0.5rem' }}>3</span>
+        <p className="label" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ background: '#004740', borderRadius: '8px', width: '26px', height: '26px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <User size={14} color="#fff" weight="fill" />
+          </span>
           Datos del jugador
         </p>
 
@@ -369,14 +383,18 @@ export default function NewBookingForm({ courts }: { courts: CourtOption[] }) {
         {/* Summary strip */}
         {selectedSlot && (
           <div style={{ background: 'rgba(0,71,64,0.06)', border: '1px solid rgba(0,71,64,0.15)', borderRadius: '10px', padding: '0.875rem 1rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem 1.5rem', marginBottom: '1.25rem', alignItems: 'center' }}>
-            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)' }}>
-              📅 <strong style={{ color: '#34252F' }}>{formatDateLabel(date)}</strong>
+            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <CalendarBlank size={14} color="#004740" weight="fill" />
+              <strong style={{ color: '#34252F' }}>{formatDateLabel(date)}</strong>
             </span>
-            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)' }}>
-              🕐 <strong style={{ color: '#34252F' }}>{selectedSlot} → {endTime}</strong> ({durationMin} min)
+            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Timer size={14} color="#004740" weight="fill" />
+              <strong style={{ color: '#34252F' }}>{selectedSlot} → {endTime}</strong>
+              <span style={{ color: 'rgba(52,37,47,0.4)' }}>({durationMin} min)</span>
             </span>
-            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)' }}>
-              🎾 <strong style={{ color: '#34252F' }}>{selectedCourt?.name}</strong>
+            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Racquet size={14} color="#004740" weight="fill" />
+              <strong style={{ color: '#34252F' }}>{selectedCourt?.name}</strong>
             </span>
             <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: '1.05rem', color: '#004740' }}>
               ${totalPrice.toLocaleString('es-AR')}

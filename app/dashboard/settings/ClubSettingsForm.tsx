@@ -5,21 +5,29 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import {
+  Wine, Drop, DropSimple, Television, Car, WifiHigh,
+  Key, Storefront, Student, Lamp, Door,
+} from '@phosphor-icons/react'
+import type { ComponentType } from 'react'
 
-const AMENITY_OPTIONS = [
-  { key: 'bar',          label: 'Bar / Cantina',        emoji: '🍺' },
-  { key: 'showers',      label: 'Vestuarios y duchas',  emoji: '🚿' },
-  { key: 'tv',           label: 'TV / Pantallas',       emoji: '📺' },
-  { key: 'free_water',   label: 'Agua gratis',          emoji: '💧' },
-  { key: 'parking',      label: 'Estacionamiento',      emoji: '🅿️' },
-  { key: 'wifi',         label: 'Wi-Fi',                emoji: '📶' },
-  { key: 'locker_room',  label: 'Vestuario',            emoji: '🔑' },
-  { key: 'pro_shop',     label: 'Tienda de equipos',    emoji: '🎾' },
-  { key: 'coaching',     label: 'Clases / Coaching',    emoji: '🏆' },
-  { key: 'lighting',     label: 'Iluminación nocturna', emoji: '💡' },
-] as const
+type PhosphorIcon = ComponentType<{ size?: number; weight?: string; color?: string }>
 
-type AmenityKey = (typeof AMENITY_OPTIONS)[number]['key']
+const AMENITY_OPTIONS: { key: string; label: string; Icon: PhosphorIcon }[] = [
+  { key: 'bar',          label: 'Bar / Cantina',        Icon: Wine as PhosphorIcon },
+  { key: 'showers',      label: 'Duchas',               Icon: Drop as PhosphorIcon },
+  { key: 'vestuarios',   label: 'Vestuarios',           Icon: Door as PhosphorIcon },
+  { key: 'tv',           label: 'TV / Pantallas',       Icon: Television as PhosphorIcon },
+  { key: 'free_water',   label: 'Agua gratis',          Icon: DropSimple as PhosphorIcon },
+  { key: 'parking',      label: 'Estacionamiento',      Icon: Car as PhosphorIcon },
+  { key: 'wifi',         label: 'Wi-Fi',                Icon: WifiHigh as PhosphorIcon },
+  { key: 'locker_room',  label: 'Casilleros',           Icon: Key as PhosphorIcon },
+  { key: 'pro_shop',     label: 'Tienda de equipos',    Icon: Storefront as PhosphorIcon },
+  { key: 'coaching',     label: 'Clases / Coaching',    Icon: Student as PhosphorIcon },
+  { key: 'lighting',     label: 'Iluminación nocturna', Icon: Lamp as PhosphorIcon },
+]
+
+type AmenityKey = string
 
 interface Club {
   id: string
@@ -138,7 +146,10 @@ export default function ClubSettingsForm({ club }: { club: Club }) {
       })
       if (!res.ok) {
         const data = await res.json()
-        toast.error(data.error ?? 'Error al guardar.')
+        const errMsg = typeof data.error === 'string'
+          ? data.error
+          : Object.values(data.error as Record<string, string[]>).flat().join(', ')
+        toast.error(errMsg || 'Error al guardar.')
       } else {
         toast.success('¡Cambios guardados correctamente!')
         router.push('/dashboard')
@@ -308,7 +319,7 @@ export default function ClubSettingsForm({ club }: { club: Club }) {
             Seleccioná lo que tiene tu club. Se muestran en tu página pública.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.6rem' }}>
-            {AMENITY_OPTIONS.map(({ key, label, emoji }) => {
+            {AMENITY_OPTIONS.map(({ key, label, Icon: AmenityIcon }) => {
               const active = form.amenities.includes(key)
               return (
                 <button
@@ -323,7 +334,11 @@ export default function ClubSettingsForm({ club }: { club: Club }) {
                     transition: 'all 0.15s',
                   }}
                 >
-                  <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{emoji}</span>
+                  <AmenityIcon
+                    size={16}
+                    weight={active ? 'fill' : 'regular'}
+                    color={active ? '#004740' : 'rgba(52,37,47,0.4)'}
+                  />
                   <span style={{
                     fontFamily: 'var(--font-inter)', fontSize: '0.78rem', fontWeight: active ? 600 : 400,
                     color: active ? '#004740' : 'rgba(52,37,47,0.6)',

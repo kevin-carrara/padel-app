@@ -5,8 +5,10 @@ import { z } from 'zod'
 
 const VALID_AMENITIES = [
   'bar', 'showers', 'tv', 'free_water', 'parking', 'wifi',
-  'locker_room', 'pro_shop', 'coaching', 'lighting',
+  'locker_room', 'pro_shop', 'coaching', 'lighting', 'vestuarios',
 ] as const
+
+type ValidAmenity = (typeof VALID_AMENITIES)[number]
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -14,7 +16,10 @@ const schema = z.object({
   phone: z.string().max(30).optional().nullable(),
   description: z.string().max(500).optional().nullable(),
   coverUrl: z.string().url().optional().nullable().or(z.literal('')),
-  amenities: z.array(z.enum(VALID_AMENITIES)).default([]),
+  // Filtra silenciosamente cualquier valor desconocido
+  amenities: z.array(z.string()).default([]).transform(arr =>
+    arr.filter((a): a is ValidAmenity => (VALID_AMENITIES as readonly string[]).includes(a))
+  ),
 })
 
 export async function PATCH(request: NextRequest) {

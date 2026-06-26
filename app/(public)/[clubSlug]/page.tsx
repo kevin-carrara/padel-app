@@ -1,9 +1,28 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db/prisma'
 import { notFound } from 'next/navigation'
-import { MapPin, Medal } from '@phosphor-icons/react/dist/ssr'
+import {
+  MapPin, Medal,
+  Wine, Drop, Door, Television, DropSimple, Car,
+  WifiHigh, Key, Storefront, Student, Lamp,
+} from '@phosphor-icons/react/dist/ssr'
+import type { ComponentType } from 'react'
 import PublicInlineBooking from './PublicInlineBooking'
 import { getClubCover } from '@/lib/club-image'
+
+const AMENITY_MAP: Record<string, { label: string; Icon: ComponentType<{ size?: number; weight?: string; color?: string }> }> = {
+  bar:          { label: 'Bar',                  Icon: Wine as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  showers:      { label: 'Duchas',               Icon: Drop as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  vestuarios:   { label: 'Vestuarios',           Icon: Door as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  tv:           { label: 'TV',                   Icon: Television as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  free_water:   { label: 'Agua gratis',          Icon: DropSimple as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  parking:      { label: 'Estacionamiento',      Icon: Car as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  wifi:         { label: 'Wi-Fi',                Icon: WifiHigh as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  locker_room:  { label: 'Casilleros',           Icon: Key as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  pro_shop:     { label: 'Tienda',               Icon: Storefront as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  coaching:     { label: 'Coaching',             Icon: Student as ComponentType<{ size?: number; weight?: string; color?: string }> },
+  lighting:     { label: 'Iluminación nocturna', Icon: Lamp as ComponentType<{ size?: number; weight?: string; color?: string }> },
+}
 
 export default async function ClubPublicPage({ params }: { params: Promise<{ clubSlug: string }> }) {
   const { clubSlug } = await params
@@ -99,23 +118,13 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
               {club.amenities && club.amenities.length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {club.amenities.map(key => {
-                    const AMENITY_LABELS: Record<string, { label: string; emoji: string }> = {
-                      bar:          { label: 'Bar', emoji: '🍺' },
-                      showers:      { label: 'Duchas', emoji: '🚿' },
-                      tv:           { label: 'TV', emoji: '📺' },
-                      free_water:   { label: 'Agua gratis', emoji: '💧' },
-                      parking:      { label: 'Estacionamiento', emoji: '🅿️' },
-                      wifi:         { label: 'Wi-Fi', emoji: '📶' },
-                      locker_room:  { label: 'Vestuario', emoji: '🔑' },
-                      pro_shop:     { label: 'Tienda', emoji: '🎾' },
-                      coaching:     { label: 'Coaching', emoji: '🏆' },
-                      lighting:     { label: 'Iluminación nocturna', emoji: '💡' },
-                    }
-                    const info = AMENITY_LABELS[key]
+                    const info = AMENITY_MAP[key]
                     if (!info) return null
+                    const { label, Icon: AmenityIcon } = info
                     return (
-                      <span key={key} className="badge" style={{ fontSize: '0.72rem', padding: '0.35rem 0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                        {info.emoji} {info.label}
+                      <span key={key} className="badge" style={{ fontSize: '0.72rem', padding: '0.35rem 0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <AmenityIcon size={13} weight="fill" color="#AE552D" />
+                        {label}
                       </span>
                     )
                   })}
