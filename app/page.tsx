@@ -114,9 +114,9 @@ export default async function LandingPage() {
             </p>
 
             <div className="anim-up d-300 flex flex-wrap items-center gap-3 mb-7">
-              <a href="/clubes" className="btn btn-primary btn-lg">Buscar Cancha →</a>
-              <Link href="/login" className="btn btn-ghost btn-lg" style={{ color: 'rgba(255,255,255,0.85)', borderColor: 'rgba(255,255,255,0.25)' }}>
-                Ver Panel Admin
+              <a href="/clubes" className="btn btn-primary btn-lg">🎾 Reservar cancha</a>
+              <Link href="/register" className="btn btn-ghost btn-lg" style={{ color: 'rgba(255,255,255,0.85)', borderColor: 'rgba(255,255,255,0.25)' }}>
+                🏟️ Registrar mi club
               </Link>
             </div>
 

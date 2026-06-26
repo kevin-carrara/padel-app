@@ -15,6 +15,9 @@ model Club {
   address            String?
   phone              String?
   logoUrl            String?
+  coverUrl           String?
+  description        String?
+  amenities          String[]           @default([])
   timezone           String             @default("America/Argentina/Cordoba")
   subscriptionStatus SubscriptionStatus @default(trial)
   trialEndsAt        DateTime?
@@ -123,6 +126,7 @@ model Booking {
 }
 
 enum SubscriptionStatus {
+  pending
   trial
   active
   inactive

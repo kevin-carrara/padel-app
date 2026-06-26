@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/db/prisma'
 import { z } from 'zod'
 
@@ -8,6 +9,7 @@ const schema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   clubName: z.string().min(2),
+  phone: z.string().optional(),
 })
 
 function slugify(text: string) {
@@ -19,7 +21,7 @@ function slugify(text: string) {
     .replace(/(^-|-$)/g, '')
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const body = await request.json()
   const parsed = schema.safeParse(body)
   if (!parsed.success) {
@@ -27,9 +29,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: messages || 'Datos inválidos' }, { status: 400 })
   }
 
-  const { name, email, password, clubName } = parsed.data
+  const { name, email, password, clubName, phone } = parsed.data
 
-  const supabaseAdmin = createClient(
+  const supabaseAdmin = createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
@@ -51,7 +53,7 @@ export async function POST(request: Request) {
 
   const userId = authData.user.id
 
-  // Generate unique slug for club
+  // Generate unique slug
   let baseSlug = slugify(clubName)
   let slug = baseSlug
   let attempt = 0
@@ -60,22 +62,27 @@ export async function POST(request: Request) {
     slug = `${baseSlug}-${attempt}`
   }
 
-  // Create club + profile in a transaction
+  // Create club (pending) + profile in transaction
   await prisma.$transaction(async (tx) => {
     const club = await tx.club.create({
       data: {
         name: clubName,
         slug,
-        trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        phone: phone ?? null,
+        subscriptionStatus: 'pending',
       },
     })
 
     await tx.profile.upsert({
       where: { id: userId },
-      update: { clubId: club.id, fullName: name, role: 'club_admin' },
-      create: { id: userId, clubId: club.id, fullName: name, role: 'club_admin' },
+      update: { clubId: club.id, fullName: name, phone: phone ?? null, role: 'club_admin' },
+      create: { id: userId, clubId: club.id, fullName: name, phone: phone ?? null, role: 'club_admin' },
     })
   })
+
+  // Auto-login the user via server-side client
+  const supabase = await createClient()
+  await supabase.auth.signInWithPassword({ email, password })
 
   return NextResponse.json({ ok: true }, { status: 201 })
 }

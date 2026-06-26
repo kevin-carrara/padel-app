@@ -11,6 +11,7 @@ type LandingClub = {
   slug: string
   address: string | null
   logoUrl: string | null
+  coverUrl: string | null
   courts: { id: string }[]
 }
 
@@ -23,6 +24,7 @@ async function getActiveClubs(): Promise<LandingClub[]> {
       slug: true,
       address: true,
       logoUrl: true,
+      coverUrl: true,
       courts: { where: { isActive: true }, select: { id: true } },
     },
     orderBy: { name: 'asc' },
@@ -94,7 +96,7 @@ export default async function ClubesPage() {
                   <div style={{ position: 'relative', height: '200px', overflow: 'hidden', background: CLUB_LOGO_STYLE[club.slug]?.bg ?? '#EBE9DF' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={getClubCover(club.slug, club.logoUrl)}
+                      src={getClubCover(club.slug, club.logoUrl, club.coverUrl)}
                       alt={club.name}
                       referrerPolicy="no-referrer"
                       loading="lazy"

@@ -39,7 +39,7 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
       {/* HERO */}
       <section className="relative overflow-hidden" style={{ minHeight: '320px', display: 'flex', alignItems: 'flex-end', paddingBottom: '3rem' }}>
         <img
-          src={getClubCover(club.slug, club.logoUrl)}
+          src={getClubCover(club.slug, club.logoUrl, club.coverUrl)}
           alt=""
           referrerPolicy="no-referrer"
           loading="lazy"
@@ -87,6 +87,43 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
       {/* CONTENT */}
       <section style={{ background: '#EBE9DF' }}>
         <div className="max-w-5xl mx-auto px-5 py-12">
+
+          {/* Description + amenities bar */}
+          {(club.description || (club.amenities && club.amenities.length > 0)) && (
+            <div className="card mb-8" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {club.description && (
+                <p style={{ fontFamily: 'var(--font-inter)', fontSize: '0.925rem', color: 'rgba(52,37,47,0.7)', lineHeight: 1.65, margin: 0 }}>
+                  {club.description}
+                </p>
+              )}
+              {club.amenities && club.amenities.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {club.amenities.map(key => {
+                    const AMENITY_LABELS: Record<string, { label: string; emoji: string }> = {
+                      bar:          { label: 'Bar', emoji: '🍺' },
+                      showers:      { label: 'Duchas', emoji: '🚿' },
+                      tv:           { label: 'TV', emoji: '📺' },
+                      free_water:   { label: 'Agua gratis', emoji: '💧' },
+                      parking:      { label: 'Estacionamiento', emoji: '🅿️' },
+                      wifi:         { label: 'Wi-Fi', emoji: '📶' },
+                      locker_room:  { label: 'Vestuario', emoji: '🔑' },
+                      pro_shop:     { label: 'Tienda', emoji: '🎾' },
+                      coaching:     { label: 'Coaching', emoji: '🏆' },
+                      lighting:     { label: 'Iluminación nocturna', emoji: '💡' },
+                    }
+                    const info = AMENITY_LABELS[key]
+                    if (!info) return null
+                    return (
+                      <span key={key} className="badge" style={{ fontSize: '0.72rem', padding: '0.35rem 0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                        {info.emoji} {info.label}
+                      </span>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Courts list */}
             <div className="lg:col-span-2">

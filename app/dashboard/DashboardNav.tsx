@@ -7,6 +7,7 @@ import {
   CalendarDots,
   Trophy,
   ChartLineUp,
+  Buildings,
   SignOut,
 } from '@phosphor-icons/react'
 
@@ -35,6 +36,12 @@ const navItems = [
     label: 'Finanzas',
     sublabel: 'Ingresos',
     Icon: ChartLineUp,
+  },
+  {
+    href: '/dashboard/settings',
+    label: 'Mi Club',
+    sublabel: 'Configuración',
+    Icon: Buildings,
   },
 ]
 

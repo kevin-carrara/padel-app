@@ -37,6 +37,11 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  // Superadmin va directo al panel de administración
+  const profile = await prisma.profile.findUnique({ where: { id: user.id }, select: { clubId: true, role: true } })
+  if (profile?.role === 'superadmin') redirect('/admin/clubs')
+
   const stats = await getStats(user.id)
 
   if (!stats) return (

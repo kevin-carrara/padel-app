@@ -29,10 +29,11 @@ function slugHash(slug: string): number {
   return h
 }
 
-export function getClubCover(slug: string, logoUrl?: string | null): string {
+export function getClubCover(slug: string, logoUrl?: string | null, coverUrl?: string | null): string {
+  if (coverUrl) return coverUrl
   if (LOCAL_IMAGES[slug]) return LOCAL_IMAGES[slug]
   if (logoUrl) return logoUrl
-  return UNSPLASH_COVERS[slugHash(slug) % UNSPLASH_COVERS.length]
+  return '/default-cover.jpg'
 }
 
 export const CLUB_LOGO_STYLE: Record<string, { bg: string; fit: 'contain' | 'cover'; padding?: string }> = {
