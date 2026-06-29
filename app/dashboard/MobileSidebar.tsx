@@ -1,176 +1,105 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import {
+  HouseSimple,
+  CalendarDots,
+  Trophy,
+  ChartLineUp,
+  Buildings,
+} from '@phosphor-icons/react'
 
 const navItems = [
-  { href: '/dashboard', label: 'Inicio', icon: '⊞' },
-  { href: '/dashboard/calendar', label: 'Calendario', icon: '📅' },
-  { href: '/dashboard/courts', label: 'Canchas', icon: '🎾' },
-  { href: '/dashboard/finances', label: 'Finanzas', icon: '💰' },
+  { href: '/dashboard', label: 'Panel', Icon: HouseSimple, exact: true },
+  { href: '/dashboard/calendar', label: 'Calendario', Icon: CalendarDots },
+  { href: '/dashboard/courts', label: 'Canchas', Icon: Trophy },
+  { href: '/dashboard/finances', label: 'Finanzas', Icon: ChartLineUp },
+  { href: '/dashboard/settings', label: 'Mi Club', Icon: Buildings },
 ]
 
 export default function MobileSidebar({ userName }: { userName: string }) {
-  const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
   return (
     <>
       {/* Mobile topbar */}
       <header
-        className="lg:hidden flex items-center justify-between px-5 py-4 sticky top-0 z-30"
-        style={{ background: '#004740' }}
+        className="lg:hidden flex items-center justify-between px-5 py-3 sticky top-0 z-30"
+        style={{ background: '#004740', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
       >
-        <button
-          onClick={() => setIsOpen(true)}
-          aria-label="Abrir menú"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '1.25rem',
-            color: '#FFFFFF',
-            padding: '0.25rem',
-            lineHeight: 1,
-          }}
-        >
-          ☰
-        </button>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', textDecoration: 'none' }}>
-          <div style={{ width: '40px', height: '40px', background: '#FFFFFF', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+          <div style={{ width: '32px', height: '32px', background: '#FFFFFF', borderRadius: '8px', flexShrink: 0, overflow: 'hidden' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/isotipo.png" alt="" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+            <img src="/isotipo.png" alt="" style={{ width: '32px', height: '32px', objectFit: 'cover' }} />
           </div>
-          <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
+          <span className="logo" style={{ color: '#FFFFFF', fontSize: '1rem' }}>AJClubPadel</span>
         </Link>
-        <button
-          onClick={async () => { await fetch('/api/auth/signout', { method: 'POST' }); window.location.href = '/login' }}
-          style={{ color: '#AE552D', fontSize: '0.75rem', fontWeight: 600, fontFamily: 'var(--font-montserrat)', background: 'none', border: 'none', cursor: 'pointer' }}
-        >
-          Salir ↩
-        </button>
-      </header>
 
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          onClick={() => setIsOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.45)',
-            zIndex: 40,
-          }}
-        />
-      )}
-
-      {/* Drawer */}
-      <aside
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: '240px',
-          background: '#004740',
-          zIndex: 50,
-          display: 'flex',
-          flexDirection: 'column',
-          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.25s cubic-bezier(0.16,1,0.3,1)',
-        }}
-      >
-        {/* Drawer header */}
-        <div
-          className="flex items-center justify-between px-5 py-6"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-        >
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', textDecoration: 'none' }}>
-            <div style={{ width: '44px', height: '44px', background: '#FFFFFF', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/isotipo.png" alt="AJClubPadel" style={{ width: '44px', height: '44px', objectFit: 'cover' }} />
-            </div>
-            <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
-          </Link>
-          <button
-            onClick={() => setIsOpen(false)}
-            aria-label="Cerrar menú"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'rgba(255,255,255,0.6)',
-              fontSize: '1.1rem',
-              lineHeight: 1,
-            }}
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
-          {navItems.map(item => {
-            const isActive = item.href === '/dashboard'
-              ? pathname === '/dashboard'
-              : pathname.startsWith(item.href)
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="nav-item"
-                style={isActive ? { background: 'rgba(255,255,255,0.1)', color: '#FFFFFF' } : {}}
-              >
-                <span className="text-base">{item.icon}</span>
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* User box */}
-        <div
-          className="mx-3 mb-4 rounded-xl p-4"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)' }}
-        >
-          <p
-            style={{
-              color: '#AE552D',
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.25rem',
-              fontFamily: 'var(--font-montserrat)',
-            }}
-          >
-            Club activo
-          </p>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.8rem', fontWeight: 600, fontFamily: 'var(--font-inter)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{
+            fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)',
+            fontFamily: 'var(--font-inter)', maxWidth: '120px',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
             {userName}
-          </p>
-        </div>
-
-        {/* Sign out */}
-        <div className="px-3 pb-6">
+          </span>
           <button
             onClick={async () => { await fetch('/api/auth/signout', { method: 'POST' }); window.location.href = '/login' }}
-            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm"
             style={{
-              color: '#AE552D',
-              fontFamily: 'var(--font-montserrat)',
-              fontWeight: 600,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
+              color: '#AE552D', fontSize: '0.72rem', fontWeight: 600,
+              fontFamily: 'var(--font-montserrat)', background: 'rgba(174,85,45,0.12)',
+              border: 'none', cursor: 'pointer', padding: '0.3rem 0.7rem', borderRadius: '9999px',
             }}
           >
-            <span>↩</span> Salir
+            Salir
           </button>
         </div>
-      </aside>
+      </header>
+
+      {/* Bottom nav bar */}
+      <nav
+        className="lg:hidden flex"
+        style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40,
+          background: '#004740',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        }}
+      >
+        {navItems.map(({ href, label, Icon, exact }) => {
+          const active = exact ? pathname === href : pathname.startsWith(href)
+          return (
+            <Link
+              key={href}
+              href={href}
+              style={{
+                flex: 1,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                gap: '0.25rem', padding: '0.6rem 0.25rem',
+                textDecoration: 'none',
+                borderTop: active ? '2px solid #AE552D' : '2px solid transparent',
+                background: active ? 'rgba(174,85,45,0.1)' : 'transparent',
+                transition: 'all 0.15s',
+              }}
+            >
+              <Icon
+                size={22}
+                weight={active ? 'fill' : 'regular'}
+                color={active ? '#AE552D' : 'rgba(255,255,255,0.45)'}
+              />
+              <span style={{
+                fontFamily: 'var(--font-montserrat)', fontWeight: 700,
+                fontSize: '0.58rem', letterSpacing: '0.02em',
+                color: active ? '#AE552D' : 'rgba(255,255,255,0.4)',
+                lineHeight: 1,
+              }}>
+                {label}
+              </span>
+            </Link>
+          )
+        })}
+      </nav>
     </>
   )
 }

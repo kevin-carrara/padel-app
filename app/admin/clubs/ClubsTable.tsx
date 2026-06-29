@@ -296,9 +296,9 @@ export default function ClubsTable({ clubs: initialClubs }: Props) {
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="input"
-          style={{ maxWidth: '280px', flex: '1' }}
+          style={{ maxWidth: '280px', flex: '1', minWidth: '0' }}
         />
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {(['all', 'pending', 'active', 'trial', 'suspended', 'inactive'] as const).map(s => (
             <button
               key={s}
@@ -318,9 +318,9 @@ export default function ClubsTable({ clubs: initialClubs }: Props) {
       </div>
 
       {/* Table */}
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden overflow-x-auto">
         {/* Header */}
-        <div style={{
+        <div className="clubs-header" style={{
           display: 'grid',
           gridTemplateColumns: '2.5fr 1fr 0.7fr 0.7fr 1fr',
           padding: '0.75rem 1.5rem',
@@ -346,6 +346,7 @@ export default function ClubsTable({ clubs: initialClubs }: Props) {
         {filtered.map((club, i) => (
           <div
             key={club.id}
+            className="club-row"
             style={{
               display: 'grid', gridTemplateColumns: '2.5fr 1fr 0.7fr 0.7fr 1fr',
               padding: '1rem 1.5rem', alignItems: 'center',
@@ -428,12 +429,12 @@ export default function ClubsTable({ clubs: initialClubs }: Props) {
             </div>
 
             {/* Courts */}
-            <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: '1rem', color: '#004740' }}>
+            <span className="court-stat" style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: '1rem', color: '#004740' }}>
               {club._count.courts}
             </span>
 
             {/* Bookings */}
-            <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: '1rem', color: '#004740' }}>
+            <span className="booking-stat" style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: '1rem', color: '#004740' }}>
               {club._count.bookings}
             </span>
 
@@ -535,6 +536,22 @@ export default function ClubsTable({ clubs: initialClubs }: Props) {
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @media (max-width: 640px) {
+          .clubs-header { display: none !important; }
+          .club-row {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.6rem;
+            padding: 1rem 1.25rem !important;
+          }
+          .club-row > div:last-child {
+            justify-content: flex-start !important;
+          }
+          .court-stat,
+          .booking-stat {
+            display: none !important;
+          }
+        }
       `}</style>
     </>
   )

@@ -194,7 +194,7 @@ export default function ClubSettingsForm({ club }: { club: Club }) {
                   position: 'absolute', top: '0.5rem', right: '0.5rem',
                   background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none',
                   borderRadius: '6px', padding: '0.25rem 0.55rem', cursor: 'pointer',
-                  fontSize: '0.72rem', fontWeight: 700, fontFamily: 'var(--font-montserrat)',
+                  fontSize: '0.75rem', fontWeight: 700, fontFamily: 'var(--font-montserrat)',
                 }}
               >
                 ✕ Quitar
@@ -246,7 +246,7 @@ export default function ClubSettingsForm({ club }: { club: Club }) {
                 onChange={e => { setForm(p => ({ ...p, coverUrl: e.target.value })); setPreviewError(false) }}
               />
               {previewError && form.coverUrl && (
-                <p style={{ fontSize: '0.72rem', color: '#dc2626', marginTop: '0.35rem' }}>
+                <p style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: '0.35rem' }}>
                   No se pudo cargar la imagen. Verificá la URL.
                 </p>
               )}
@@ -285,7 +285,7 @@ export default function ClubSettingsForm({ club }: { club: Club }) {
                 {form.description.length}/500
               </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
               <div className="form-group">
                 <label className="label">Dirección</label>
                 <input

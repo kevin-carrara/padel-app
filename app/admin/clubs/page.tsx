@@ -96,7 +96,7 @@ export default async function AdminClubsPage() {
           Panel de administracion
         </p>
         <h1 style={{
-          fontFamily: 'var(--font-montserrat)', fontSize: '2rem', fontWeight: 800,
+          fontFamily: 'var(--font-montserrat)', fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 800,
           color: '#34252F', letterSpacing: '-0.02em', lineHeight: 1.1,
         }}>
           Clubes

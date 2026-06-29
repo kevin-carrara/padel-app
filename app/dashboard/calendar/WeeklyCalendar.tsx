@@ -217,6 +217,8 @@ export default function WeeklyCalendar({ courts, todayStr }: Props) {
   const filteredDays = weekData?.days.map(d => ({ ...d, bookings: applyFilter(d.bookings) }))
   const filteredDayBks = applyFilter(dayData?.bookings ?? [])
 
+  const displayDays = filteredDays ?? []
+
   // Shared time-grid renderer (week columns = days, day columns = courts)
   const renderGrid = (
     cols: { id: string; isToday: boolean; bookings: BookingWithCourt[] }[],
@@ -358,12 +360,13 @@ export default function WeeklyCalendar({ courts, todayStr }: Props) {
       {/* WEEK VIEW */}
       {viewMode === 'week' && (loading ? <Spinner /> : (
         <div className="card overflow-hidden">
+          {/* scroll-x contained within the card — page never scrolls horizontally */}
           <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '72vh' }}>
-            <div style={{ minWidth: '680px' }}>
+            <div style={{ minWidth: '520px' }}>
               {/* Sticky day header */}
-              <div style={{ display: 'grid', gridTemplateColumns: '44px repeat(7, 1fr)', borderBottom: '1px solid rgba(52,37,47,0.08)', position: 'sticky', top: 0, background: '#fff', zIndex: 30 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: `44px repeat(${displayDays.length}, 1fr)`, borderBottom: '1px solid rgba(52,37,47,0.08)', position: 'sticky', top: 0, background: '#fff', zIndex: 30 }}>
                 <div />
-                {filteredDays?.map(day => {
+                {displayDays.map(day => {
                   const isToday = day.date === todayStr
                   return (
                     <button key={day.date} onClick={() => goToDay(day.date)} style={{ padding: '0.6rem 0.25rem', textAlign: 'center', background: isToday ? 'rgba(0,71,64,0.06)' : 'transparent', border: 'none', cursor: 'pointer' }}>
@@ -378,7 +381,7 @@ export default function WeeklyCalendar({ courts, todayStr }: Props) {
                 })}
               </div>
               {renderGrid(
-                filteredDays?.map(d => ({ id: d.date, isToday: d.date === todayStr, bookings: d.bookings })) ?? [],
+                displayDays.map(d => ({ id: d.date, isToday: d.date === todayStr, bookings: d.bookings })),
                 weekContainsToday
               )}
             </div>
@@ -390,7 +393,7 @@ export default function WeeklyCalendar({ courts, todayStr }: Props) {
       {viewMode === 'day' && (loading ? <Spinner /> : (
         <div className="card overflow-hidden">
           <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '72vh' }}>
-            <div style={{ minWidth: `${44 + Math.max(courts.length, 1) * 160}px` }}>
+            <div style={{ minWidth: `${44 + Math.max(courts.length, 1) * 120}px` }}>
               {/* Sticky court header */}
               <div style={{ display: 'grid', gridTemplateColumns: `44px repeat(${courts.length}, 1fr)`, borderBottom: '1px solid rgba(52,37,47,0.08)', position: 'sticky', top: 0, background: '#fff', zIndex: 30 }}>
                 <div />

@@ -47,7 +47,7 @@ export default async function FinancesPage() {
         <h1
           style={{
             fontFamily: 'var(--font-montserrat)',
-            fontSize: '2rem',
+            fontSize: 'clamp(1.5rem, 5vw, 2rem)',
             fontWeight: 800,
             color: '#34252F',
             letterSpacing: '-0.02em',
@@ -127,6 +127,7 @@ export default async function FinancesPage() {
                 <div
                   key={i}
                   className="px-5 py-3 flex items-center justify-between row-hover"
+                  style={{ flexWrap: 'wrap', gap: '0.5rem' }}
                 >
                   <span
                     style={{

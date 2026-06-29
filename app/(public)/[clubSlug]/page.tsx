@@ -65,7 +65,7 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.3, pointerEvents: 'none' }}
         />
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'rgba(0,71,64,0.7)' }} />
-        <div className="relative z-10 max-w-5xl mx-auto px-5 w-full pt-16">
+        <div className="relative z-10 max-w-5xl mx-auto px-5 w-full pt-10 md:pt-16">
           <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 anim-in" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
             <span style={{ color: 'rgba(235,233,223,0.75)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'var(--font-montserrat)' }}>
               Club de Pádel

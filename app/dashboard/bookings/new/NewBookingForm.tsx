@@ -150,7 +150,7 @@ export default function NewBookingForm({ courts }: { courts: CourtOption[] }) {
           </span>
           Elegí la cancha
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.75rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.75rem' }}>
           {courts.map(c => {
             const active = courtId === c.id
             return (
@@ -309,6 +309,7 @@ export default function NewBookingForm({ courts }: { courts: CourtOption[] }) {
                       cursor,
                       transition: 'all 0.12s',
                       position: 'relative',
+                      minWidth: '70px',
                     }}
                   >
                     {slot.start}

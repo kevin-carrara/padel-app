@@ -25,10 +25,15 @@ type Court = {
   _count: { bookings: number }
 }
 
-const TIME_OPTIONS = Array.from({ length: 17 }, (_, i) => {
-  const hour = 7 + i
-  return `${String(hour).padStart(2, '0')}:00`
-})
+// 08:00 a 01:00 (madrugada) — 18 opciones
+const TIME_OPTIONS = [
+  ...Array.from({ length: 16 }, (_, i) => {
+    const hour = 8 + i
+    return `${String(hour).padStart(2, '0')}:00`
+  }),
+  '00:00',
+  '01:00',
+]
 
 const SLOT_OPTIONS = [
   { value: 60, label: '1 hora' },
@@ -42,7 +47,7 @@ function initDaySchedules(schedules: Court['schedules']): DaySchedule[] {
     if (existing) {
       return { active: true, openTime: existing.openTime, closeTime: existing.closeTime, slotDuration: existing.slotDuration }
     }
-    return { active: false, openTime: '08:00', closeTime: '22:00', slotDuration: 60 }
+    return { active: false, openTime: '08:00', closeTime: '01:00', slotDuration: 90 }
   })
 }
 
@@ -194,54 +199,66 @@ export default function CourtsList({ courts: initial, clubId }: { courts: Court[
           return (
             <div key={court.id} className="card-court card-hover anim-up" style={{ animationDelay: `${i * 60}ms` }}>
               {/* Info row */}
-              <div className="p-6">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: '1.05rem', color: '#34252F' }}>
-                      {court.name}
-                    </h3>
-                    <p style={{ fontSize: '0.8rem', color: 'rgba(52,37,47,0.5)', marginTop: '0.15rem', fontFamily: 'var(--font-inter)' }}>
-                      {court.surface} · {court.isIndoor ? 'Techada' : 'Al aire libre'}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.25rem', fontWeight: 800, color: '#004740' }}>
-                      ${Number(court.pricePerHour).toLocaleString('es-AR')}/h
-                    </span>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(52,37,47,0.35)', fontFamily: 'var(--font-montserrat)' }}>
-                      {court._count.bookings} reservas
-                    </span>
-                    <button
-                      onClick={() => toggleActive(court.id, court.isActive)}
-                      className={`badge ${court.isActive ? 'badge-racing' : 'badge-outline'}`}
-                      style={{ cursor: 'pointer', border: court.isActive ? undefined : '1px solid rgba(52,37,47,0.2)' }}
-                    >
-                      {court.isActive ? 'Activa' : 'Inactiva'}
-                    </button>
-                  </div>
+              <div className="p-4">
+                {/* Top: name + badge */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: '0.95rem', color: '#34252F' }}>
+                    {court.name}
+                  </h3>
+                  <button
+                    onClick={() => toggleActive(court.id, court.isActive)}
+                    className={`badge ${court.isActive ? 'badge-racing' : 'badge-outline'}`}
+                    style={{ cursor: 'pointer', border: court.isActive ? undefined : '1px solid rgba(52,37,47,0.2)', fontSize: '0.62rem' }}
+                  >
+                    {court.isActive ? 'Activa' : 'Inactiva'}
+                  </button>
                 </div>
 
-                {/* Schedule summary (collapsed) */}
-                <div className="mt-4 pt-4 flex items-center justify-between" style={{ borderTop: '1px solid rgba(52,37,47,0.08)' }}>
-                  <div className="flex flex-wrap gap-2">
+                {/* Middle: price + surface + bookings */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.1rem', fontWeight: 800, color: '#004740' }}>
+                    ${Number(court.pricePerHour).toLocaleString('es-AR')}/h
+                  </span>
+                  <span style={{ fontSize: '0.72rem', color: 'rgba(52,37,47,0.45)', fontFamily: 'var(--font-inter)' }}>
+                    {court.surface} · {court.isIndoor ? 'Techada' : 'Al aire libre'}
+                  </span>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(52,37,47,0.3)', fontFamily: 'var(--font-montserrat)', marginLeft: 'auto' }}>
+                    {court._count.bookings} reservas
+                  </span>
+                </div>
+
+                {/* Schedule summary */}
+                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(52,37,47,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+                  {/* Day pills compact */}
+                  <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', flex: 1 }}>
                     {court.schedules.length > 0 ? (
-                      court.schedules.map(s => (
-                        <span key={s.dayOfWeek} className="badge badge-outline" style={{ fontSize: '0.7rem' }}>
-                          {DAYS[s.dayOfWeek]} {s.openTime}–{s.closeTime}
-                        </span>
-                      ))
+                      DAYS.map((day, di) => {
+                        const s = court.schedules.find(sc => sc.dayOfWeek === di)
+                        return s ? (
+                          <span key={di} style={{
+                            display: 'inline-flex', flexDirection: 'column', alignItems: 'center',
+                            padding: '0.2rem 0.45rem', borderRadius: '6px',
+                            background: 'rgba(0,71,64,0.08)',
+                            fontFamily: 'var(--font-montserrat)', fontWeight: 700,
+                            fontSize: '0.6rem', color: '#004740', lineHeight: 1.3,
+                          }}>
+                            <span>{day}</span>
+                            <span style={{ fontWeight: 400, color: 'rgba(0,71,64,0.7)', fontSize: '0.58rem' }}>{s.openTime.slice(0,5)}–{s.closeTime.slice(0,5)}</span>
+                          </span>
+                        ) : null
+                      })
                     ) : (
-                      <span style={{ fontSize: '0.75rem', color: 'rgba(52,37,47,0.35)', fontFamily: 'var(--font-inter)' }}>
-                        Sin horarios configurados
+                      <span style={{ fontSize: '0.72rem', color: 'rgba(52,37,47,0.35)', fontFamily: 'var(--font-inter)' }}>
+                        Sin horarios
                       </span>
                     )}
                   </div>
                   <button
                     onClick={() => toggleExpand(court)}
                     className="btn btn-ghost btn-sm"
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', whiteSpace: 'nowrap', flexShrink: 0 }}
                   >
-                    Configurar horarios {isExpanded ? <CaretUp size={14} /> : <CaretDown size={14} />}
+                    Horarios {isExpanded ? <CaretUp size={13} /> : <CaretDown size={13} />}
                   </button>
                 </div>
               </div>
@@ -275,42 +292,51 @@ export default function CourtsList({ courts: initial, clubId }: { courts: Court[
                     ))}
                   </div>
 
-                  {/* Active day rows */}
-                  <div className="space-y-3 mb-5">
+                  {/* Active day rows — compact single line per day */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '1rem' }}>
                     {DAYS.map((day, di) => {
                       if (!daySchedules[di].active) return null
                       return (
-                        <div key={di} className="flex items-center gap-3 flex-wrap">
-                          <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#34252F', fontFamily: 'var(--font-montserrat)', width: '2.5rem' }}>
+                        <div key={di} style={{
+                          display: 'grid',
+                          gridTemplateColumns: '2.5rem 1fr 1fr 1fr',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          padding: '0.4rem 0.6rem',
+                          borderRadius: '8px',
+                          background: 'rgba(255,255,255,0.6)',
+                          border: '1px solid rgba(52,37,47,0.07)',
+                        }}>
+                          <span style={{ fontWeight: 700, fontSize: '0.75rem', color: '#34252F', fontFamily: 'var(--font-montserrat)' }}>
                             {day}
                           </span>
-                          <div className="flex items-center gap-2">
-                            <label style={{ fontSize: '0.75rem', color: 'rgba(52,37,47,0.5)', fontFamily: 'var(--font-inter)' }}>Apertura</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                            <label style={{ fontSize: '0.55rem', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Abre</label>
                             <select
                               className="input"
-                              style={{ padding: '0.3rem 0.5rem', fontSize: '0.82rem', width: 'auto' }}
+                              style={{ padding: '0.25rem 0.35rem', fontSize: '0.78rem', width: '100%' }}
                               value={daySchedules[di].openTime}
                               onChange={e => updateDaySchedule(court.id, di, { openTime: e.target.value })}
                             >
                               {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <label style={{ fontSize: '0.75rem', color: 'rgba(52,37,47,0.5)', fontFamily: 'var(--font-inter)' }}>Cierre</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                            <label style={{ fontSize: '0.55rem', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Cierra</label>
                             <select
                               className="input"
-                              style={{ padding: '0.3rem 0.5rem', fontSize: '0.82rem', width: 'auto' }}
+                              style={{ padding: '0.25rem 0.35rem', fontSize: '0.78rem', width: '100%' }}
                               value={daySchedules[di].closeTime}
                               onChange={e => updateDaySchedule(court.id, di, { closeTime: e.target.value })}
                             >
                               {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <label style={{ fontSize: '0.75rem', color: 'rgba(52,37,47,0.5)', fontFamily: 'var(--font-inter)' }}>Turno</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                            <label style={{ fontSize: '0.55rem', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Turno</label>
                             <select
                               className="input"
-                              style={{ padding: '0.3rem 0.5rem', fontSize: '0.82rem', width: 'auto' }}
+                              style={{ padding: '0.25rem 0.35rem', fontSize: '0.78rem', width: '100%' }}
                               value={daySchedules[di].slotDuration}
                               onChange={e => updateDaySchedule(court.id, di, { slotDuration: Number(e.target.value) })}
                             >

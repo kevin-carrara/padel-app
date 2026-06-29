@@ -65,7 +65,7 @@ export default async function LandingPage() {
         <div className="relative z-10 max-w-6xl mx-auto px-5 w-full py-20">
           {/* Main content card */}
           <div
-            className="max-w-2xl rounded-3xl p-8 anim-up"
+            className="max-w-2xl rounded-3xl p-5 md:p-8 anim-up"
             style={{
               background: 'rgba(0,55,50,0.7)',
               backdropFilter: 'blur(16px)',

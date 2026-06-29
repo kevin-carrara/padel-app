@@ -87,7 +87,7 @@ export default async function DashboardPage() {
       <div className="mb-8">
         <div className="section-label">Panel de control</div>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '2.25rem', fontWeight: 700, color: '#34252F', letterSpacing: '-0.01em' }}>
+          <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(1.5rem, 5vw, 2.25rem)', fontWeight: 700, color: '#34252F', letterSpacing: '-0.01em' }}>
             {club.name}
           </h1>
           <span className="badge badge-cognac">
@@ -97,59 +97,65 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
         {/* Reservas hoy */}
-        <div className="card stat-card-accent p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="rounded-xl flex items-center justify-center" style={{ width: '40px', height: '40px', background: 'rgba(0,71,64,0.08)' }}>
-              <CalendarBlank size={20} color="#004740" />
-            </div>
-            <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}>
-              Hoy
-            </span>
+        <div className="card" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '11px', background: 'rgba(0,71,64,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CalendarBlank size={20} color="#004740" />
           </div>
-          <p style={{ fontFamily: 'var(--font-montserrat)', fontSize: '2.5rem', fontWeight: 800, color: '#004740', lineHeight: 1 }}>
-            {todayCount}
-          </p>
-          <p style={{ fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', fontFamily: 'var(--font-inter)', marginTop: '0.25rem' }}>
-            Reservas hoy
-          </p>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.6rem', fontWeight: 800, color: '#004740', lineHeight: 1 }}>
+                {todayCount}
+              </p>
+              <span style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.35)', fontFamily: 'var(--font-montserrat)' }}>
+                Hoy
+              </span>
+            </div>
+            <p style={{ fontSize: '0.72rem', color: 'rgba(52,37,47,0.5)', fontFamily: 'var(--font-inter)', marginTop: '0.15rem' }}>
+              Reservas hoy
+            </p>
+          </div>
         </div>
 
         {/* Ingresos del mes */}
-        <div className="card p-5" style={{ borderLeft: '4px solid #AE552D', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="rounded-xl flex items-center justify-center" style={{ width: '40px', height: '40px', background: 'rgba(174,85,45,0.08)' }}>
-              <CurrencyDollar size={20} color="#AE552D" />
-            </div>
-            <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}>
-              Este mes
-            </span>
+        <div className="card" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.875rem', borderLeft: '3px solid #AE552D' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '11px', background: 'rgba(174,85,45,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CurrencyDollar size={20} color="#AE552D" />
           </div>
-          <p style={{ fontFamily: 'var(--font-montserrat)', fontSize: '2.5rem', fontWeight: 800, color: '#AE552D', lineHeight: 1 }}>
-            ${totalRevenue.toLocaleString('es-AR')}
-          </p>
-          <p style={{ fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', fontFamily: 'var(--font-inter)', marginTop: '0.25rem' }}>
-            Ingresos confirmados
-          </p>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.6rem', fontWeight: 800, color: '#AE552D', lineHeight: 1 }}>
+                ${totalRevenue.toLocaleString('es-AR')}
+              </p>
+              <span style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.35)', fontFamily: 'var(--font-montserrat)' }}>
+                Este mes
+              </span>
+            </div>
+            <p style={{ fontSize: '0.72rem', color: 'rgba(52,37,47,0.5)', fontFamily: 'var(--font-inter)', marginTop: '0.15rem' }}>
+              Ingresos confirmados
+            </p>
+          </div>
         </div>
 
         {/* Tasa de ocupación */}
-        <div className="card stat-card-accent p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="rounded-xl flex items-center justify-center" style={{ width: '40px', height: '40px', background: 'rgba(0,71,64,0.08)' }}>
-              <TrendUp size={20} color="#004740" />
-            </div>
-            <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}>
-              Ocupación
-            </span>
+        <div className="card" style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '11px', background: 'rgba(0,71,64,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <TrendUp size={20} color="#004740" />
           </div>
-          <p style={{ fontFamily: 'var(--font-montserrat)', fontSize: '2.5rem', fontWeight: 800, color: '#004740', lineHeight: 1 }}>
-            {occupancyPct}%
-          </p>
-          <p style={{ fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', fontFamily: 'var(--font-inter)', marginTop: '0.25rem' }}>
-            {confirmedCount} confirmadas total
-          </p>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.6rem', fontWeight: 800, color: '#004740', lineHeight: 1 }}>
+                {occupancyPct}%
+              </p>
+              <span style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(52,37,47,0.35)', fontFamily: 'var(--font-montserrat)' }}>
+                Ocupación
+              </span>
+            </div>
+            <p style={{ fontSize: '0.72rem', color: 'rgba(52,37,47,0.5)', fontFamily: 'var(--font-inter)', marginTop: '0.15rem' }}>
+              {confirmedCount} confirmadas total
+            </p>
+          </div>
         </div>
       </div>
 
@@ -164,57 +170,66 @@ export default async function DashboardPage() {
 
       {/* Recent bookings */}
       <div>
-        <h2 style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.125rem', fontWeight: 700, color: '#34252F', marginBottom: '0.75rem' }}>
-          Últimas reservas
-        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1rem', fontWeight: 700, color: '#34252F' }}>
+            Últimas reservas
+          </h2>
+          <Link href="/dashboard/calendar" style={{ fontSize: '0.72rem', color: '#004740', fontWeight: 600, fontFamily: 'var(--font-montserrat)', textDecoration: 'none' }}>
+            Ver todas →
+          </Link>
+        </div>
         {recentBookings.length === 0 ? (
-          <div className="card p-8 text-center diagonal-stripe" style={{ color: 'rgba(52,37,47,0.4)' }}>
-            Sin reservas aun.
+          <div className="card p-8 text-center" style={{ color: 'rgba(52,37,47,0.4)' }}>
+            Sin reservas aún.
           </div>
         ) : (
           <div className="card overflow-hidden">
-            <div
-              className="grid px-5 py-3 text-xs font-bold uppercase tracking-widest"
-              style={{ gridTemplateColumns: '1fr 1fr 1fr 100px 80px', background: '#EBE9DF', borderBottom: '1px solid rgba(52,37,47,0.08)', color: 'rgba(52,37,47,0.4)', fontFamily: 'var(--font-montserrat)' }}
-            >
-              <span>Jugador</span>
-              <span>Cancha</span>
-              <span>Horario</span>
-              <span>Estado</span>
-              <span></span>
-            </div>
-            <div className="divide-y" style={{ borderColor: 'rgba(52,37,47,0.08)' }}>
-              {recentBookings.map(b => (
-                <div key={b.id} className="grid px-5 py-3.5 items-center row-hover" style={{ gridTemplateColumns: '1fr 1fr 1fr 100px 80px' }}>
-                  <div>
-                    <p style={{ fontWeight: 600, fontSize: '0.875rem', color: '#34252F', fontFamily: 'var(--font-montserrat)' }}>
+            {recentBookings.map((b, i) => (
+              <div
+                key={b.id}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.75rem',
+                  padding: '0.75rem 1rem',
+                  borderBottom: i < recentBookings.length - 1 ? '1px solid rgba(52,37,47,0.06)' : 'none',
+                }}
+              >
+                {/* Avatar inicial */}
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+                  background: 'rgba(0,71,64,0.09)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: '0.8rem', color: '#004740',
+                }}>
+                  {b.playerName.charAt(0).toUpperCase()}
+                </div>
+
+                {/* Info principal */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <p style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: '0.82rem', color: '#34252F' }}>
                       {b.playerName}
                     </p>
-                    {b.playerPhone && (
-                      <p style={{ fontSize: '0.7rem', color: 'rgba(52,37,47,0.4)' }}>{b.playerPhone}</p>
-                    )}
+                    <span className={`badge ${statusBadge[b.status] ?? 'badge-outline'}`} style={{ fontSize: '0.58rem' }}>
+                      {statusLabel[b.status] ?? b.status}
+                    </span>
                   </div>
-                  <span style={{ fontSize: '0.875rem', color: '#34252F', fontWeight: 500, fontFamily: 'var(--font-inter)' }}>
-                    {b.court.name}
-                  </span>
-                  <span style={{ fontSize: '0.8rem', color: 'rgba(52,37,47,0.55)', fontFamily: 'var(--font-inter)' }}>
-                    {new Date(b.startTime).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                  <span className={`badge ${statusBadge[b.status] ?? 'badge-outline'}`}>
-                    {statusLabel[b.status] ?? b.status}
-                  </span>
-                  <div>
-                    {b.status === 'confirmed' && (
-                      <CancelBookingButton
-                        bookingId={b.id}
-                        playerName={b.playerName}
-                        startTime={b.startTime.toISOString()}
-                      />
-                    )}
-                  </div>
+                  <p style={{ fontSize: '0.7rem', color: 'rgba(52,37,47,0.45)', fontFamily: 'var(--font-inter)', marginTop: '0.1rem' }}>
+                    {b.court.name} · {new Date(b.startTime).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </p>
                 </div>
-              ))}
-            </div>
+
+                {/* Cancelar */}
+                {b.status === 'confirmed' && (
+                  <div style={{ flexShrink: 0 }}>
+                    <CancelBookingButton
+                      bookingId={b.id}
+                      playerName={b.playerName}
+                      startTime={b.startTime.toISOString()}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

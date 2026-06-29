@@ -28,13 +28,15 @@ export default async function CalendarPage() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <div className="section-label">Reservas</div>
-          <h1 style={{ fontFamily: 'var(--font-montserrat)', fontSize: '2rem', fontWeight: 800, color: '#34252F', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontFamily: 'var(--font-montserrat)', fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 800, color: '#34252F', letterSpacing: '-0.02em' }}>
             Calendario
           </h1>
         </div>
         <Link href="/dashboard/bookings/new" className="btn btn-primary">+ Nueva reserva</Link>
       </div>
-      <WeeklyCalendar courts={courts} todayStr={todayStr} />
+      <div className="overflow-x-auto">
+        <WeeklyCalendar courts={courts} todayStr={todayStr} />
+      </div>
     </div>
   )
 }

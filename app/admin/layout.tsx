@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/db/prisma'
+import AdminMobileSidebar from './AdminMobileSidebar'
 import {
   Buildings,
   ChartBar,
@@ -122,7 +123,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       {/* MAIN */}
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 px-6 py-8 max-w-6xl w-full mx-auto">
+        <AdminMobileSidebar userEmail={user.email ?? ''} />
+        <main className="flex-1 px-6 py-8 pb-24 lg:pb-8 max-w-6xl w-full mx-auto">
           {children}
         </main>
       </div>

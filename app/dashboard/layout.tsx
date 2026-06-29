@@ -139,7 +139,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       {/* MAIN */}
       <div className="flex-1 flex flex-col min-w-0">
         <MobileSidebar userName={userName} />
-        <main className="flex-1 px-6 py-8 max-w-6xl w-full mx-auto">
+        <main className="flex-1 px-6 py-8 pb-24 lg:pb-8 max-w-6xl w-full mx-auto">
           {children}
         </main>
       </div>
