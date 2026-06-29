@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import { prisma } from '@/lib/db/prisma'
-import { MapPin } from '@phosphor-icons/react/dist/ssr'
-import { getClubCover, CLUB_LOGO_STYLE } from '@/lib/club-image'
+import { createClient } from '@/lib/supabase/server'
+import { BackButton } from './BackButton'
+import { ClubCard } from './ClubCard'
 
 export const dynamic = 'force-dynamic'
 
@@ -117,6 +117,17 @@ async function getActiveClubs(): Promise<LandingClub[]> {
 export default async function ClubesPage() {
   const clubs = await getActiveClubs()
 
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  let isPlayer = false
+  if (user) {
+    const profile = await prisma.profile.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    })
+    isPlayer = profile?.role === 'player'
+  }
+
   return (
     <div className="min-h-screen" style={{ background: '#EBE9DF' }}>
       <style>{`
@@ -137,11 +148,9 @@ export default async function ClubesPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/isotipo.png" alt="AJClubPadel" style={{ width: '36px', height: '36px', objectFit: 'cover' }} />
             </div>
-            <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>AJClubPadel</Link>
+            <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
           </div>
-          <Link href="/" className="btn btn-ghost btn-sm" style={{ color: 'rgba(255,255,255,0.75)', borderColor: 'rgba(255,255,255,0.2)' }}>
-            ← Inicio
-          </Link>
+          <BackButton />
         </div>
       </nav>
 
@@ -171,77 +180,9 @@ export default async function ClubesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-            {clubs.map((club: LandingClub, i: number) => (
-              <Link key={club.id} href={`/${club.slug}`} style={{ textDecoration: 'none' }}>
-                <div
-                  className="group relative overflow-hidden anim-up"
-                  style={{
-                    background: '#FFFFFF',
-                    borderRadius: '24px',
-                    border: '1px solid rgba(52,37,47,0.06)',
-                    boxShadow: '0 2px 12px rgba(52,37,47,0.06)',
-                    animationDelay: `${i * 60}ms`,
-                    transition: 'box-shadow 0.2s ease, transform 0.15s ease',
-                  }}
-                >
-                  <div style={{ height: '4px', background: '#004740', borderRadius: '24px 24px 0 0' }} />
-                  <div className="club-cover" style={{ position: 'relative', height: '200px', overflow: 'hidden', background: CLUB_LOGO_STYLE[club.slug]?.bg ?? '#EBE9DF' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getClubCover(club.slug, club.logoUrl, club.coverUrl)}
-                      alt={club.name}
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      style={{
-                        width: '100%', height: '100%',
-                        objectFit: CLUB_LOGO_STYLE[club.slug]?.fit ?? 'cover',
-                        padding: CLUB_LOGO_STYLE[club.slug]?.padding ?? '0',
-                      }}
-                    />
-                    <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full px-2.5 py-1" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)' }}>
-                      <span style={{ color: '#f59e0b', fontSize: '0.75rem' }}>★</span>
-                      <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#34252F', fontFamily: 'var(--font-montserrat)' }}>4.9</span>
-                    </div>
-
-                  </div>
-                  <div className="club-card-body p-5">
-                    <h3 className="text-sm md:text-[1.1rem]" style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, color: '#34252F', marginBottom: '0.4rem' }}>
-                      {club.name}
-                    </h3>
-                    {club.address && (
-                      <div className="hidden md:flex items-center gap-1.5 mb-3">
-                        <MapPin size={13} color="rgba(52,37,47,0.45)" />
-                        <span style={{ color: 'rgba(52,37,47,0.55)', fontSize: '0.825rem', fontFamily: 'var(--font-inter)' }}>{club.address}</span>
-                      </div>
-                    )}
-                    <div className="club-court-row flex items-center justify-between mt-4">
-                      <span className="badge badge-racing">{club.courts.length} cancha{club.courts.length !== 1 ? 's' : ''}</span>
-                      <span className="club-reservar" style={{ color: '#AE552D', fontWeight: 700, fontSize: '0.875rem', fontFamily: 'var(--font-montserrat)' }}>
-                        Reservar →
-                      </span>
-                    </div>
-                    {/* Availability badge */}
-                    <div className="club-avail-row" style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(52,37,47,0.07)' }}>
-                      {club.hasAvailabilityToday ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#16a34a', flexShrink: 0, boxShadow: '0 0 0 2px rgba(22,163,74,0.2)' }} />
-                          <span style={{ fontSize: '0.72rem', fontWeight: 700, fontFamily: 'var(--font-montserrat)', color: '#16a34a', letterSpacing: '0.03em' }}>
-                            Hay horarios disponibles hoy
-                          </span>
-                        </div>
-                      ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'rgba(52,37,47,0.25)', flexShrink: 0 }} />
-                          <span style={{ fontSize: '0.72rem', fontWeight: 700, fontFamily: 'var(--font-montserrat)', color: 'rgba(52,37,47,0.35)', letterSpacing: '0.03em' }}>
-                            Sin horarios disponibles hoy
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+              {clubs.map((club: LandingClub, i: number) => (
+                <ClubCard key={club.id} club={club} index={i} isPlayer={isPlayer} />
+              ))}
           </div>
         )}
       </section>

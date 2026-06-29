@@ -45,6 +45,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Protect player routes
+  if (pathname.startsWith('/jugador') && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
   // Redirect logged-in users away from auth pages
   if ((pathname === '/login' || pathname === '/register') && user) {
     const url = request.nextUrl.clone()
