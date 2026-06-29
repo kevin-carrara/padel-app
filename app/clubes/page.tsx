@@ -5,6 +5,8 @@ import { getClubCover, CLUB_LOGO_STYLE } from '@/lib/club-image'
 
 export const dynamic = 'force-dynamic'
 
+const TZ_OFFSET = '-03:00'
+
 type LandingClub = {
   id: string
   name: string
@@ -13,9 +15,77 @@ type LandingClub = {
   logoUrl: string | null
   coverUrl: string | null
   courts: { id: string }[]
+  hasAvailabilityToday: boolean
+}
+
+/** Returns today's date string in ART (UTC-3) as 'YYYY-MM-DD' */
+function getTodayART(): string {
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  const d = String(now.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+/** Returns true if the club has at least one free slot today */
+async function clubHasAvailabilityToday(clubId: string, courtIds: string[], today: string): Promise<boolean> {
+  if (courtIds.length === 0) return false
+
+  const [y, m, d] = today.split('-').map(Number)
+  const dayOfWeek = new Date(y, m - 1, d).getDay()
+
+  const [schedules, bookings] = await Promise.all([
+    prisma.courtSchedule.findMany({
+      where: { courtId: { in: courtIds }, dayOfWeek },
+    }),
+    prisma.booking.findMany({
+      where: {
+        clubId,
+        status: { not: 'cancelled' },
+        startTime: {
+          gte: new Date(`${today}T00:00:00${TZ_OFFSET}`),
+          lt: new Date(`${today}T23:59:59${TZ_OFFSET}`),
+        },
+      },
+      select: { courtId: true, startTime: true, endTime: true },
+    }),
+  ])
+
+  const now = new Date()
+
+  for (const sched of schedules) {
+    const [openH, openM] = sched.openTime.split(':').map(Number)
+    const [closeH, closeM] = sched.closeTime.split(':').map(Number)
+    const slotMin = sched.slotDuration
+    const courtBookings = bookings.filter(b => b.courtId === sched.courtId)
+
+    let curMin = openH * 60 + openM
+    const closeMin = closeH * 60 + closeM
+
+    while (curMin + slotMin <= closeMin) {
+      const slotH = Math.floor(curMin / 60)
+      const slotM = curMin % 60
+      const slotStart = new Date(`${today}T${String(slotH).padStart(2,'0')}:${String(slotM).padStart(2,'0')}:00${TZ_OFFSET}`)
+
+      // Skip past slots
+      if (slotStart > now) {
+        const endMin = curMin + slotMin
+        const slotEnd = new Date(`${today}T${String(Math.floor(endMin/60)).padStart(2,'0')}:${String(endMin%60).padStart(2,'0')}:00${TZ_OFFSET}`)
+        const isTaken = courtBookings.some(b =>
+          new Date(b.startTime) < slotEnd && new Date(b.endTime) > slotStart
+        )
+        if (!isTaken) return true
+      }
+      curMin += slotMin
+    }
+  }
+
+  return false
 }
 
 async function getActiveClubs(): Promise<LandingClub[]> {
+  const today = getTodayART()
+
   const clubs = await prisma.club.findMany({
     where: { subscriptionStatus: { in: ['active', 'trial'] } },
     select: {
@@ -29,7 +99,19 @@ async function getActiveClubs(): Promise<LandingClub[]> {
     },
     orderBy: { name: 'asc' },
   })
-  return clubs as LandingClub[]
+
+  const clubsWithAvailability = await Promise.all(
+    clubs.map(async (club) => ({
+      ...club,
+      hasAvailabilityToday: await clubHasAvailabilityToday(
+        club.id,
+        club.courts.map(c => c.id),
+        today
+      ),
+    }))
+  )
+
+  return clubsWithAvailability
 }
 
 export default async function ClubesPage() {
@@ -37,6 +119,16 @@ export default async function ClubesPage() {
 
   return (
     <div className="min-h-screen" style={{ background: '#EBE9DF' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .club-cover { height: 120px !important; }
+          .club-card-body { padding: 0.6rem 0.75rem 0.75rem !important; }
+          .club-avail-row { margin-top: 0.5rem !important; padding-top: 0.5rem !important; }
+          .club-court-row { flex-direction: column !important; align-items: flex-start !important; gap: 0.4rem !important; margin-top: 0.5rem !important; }
+          .club-court-row .badge { font-size: 0.6rem !important; padding: 0.2rem 0.5rem !important; }
+          .club-reservar { font-size: 0.75rem !important; }
+        }
+      `}</style>
       {/* NAV */}
       <nav style={{ background: '#004740' }}>
         <div className="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
@@ -78,7 +170,7 @@ export default async function ClubesPage() {
             <p style={{ color: 'rgba(52,37,47,0.3)', fontSize: '0.875rem' }}>Los primeros clubs se están incorporando — volvé pronto.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
             {clubs.map((club: LandingClub, i: number) => (
               <Link key={club.id} href={`/${club.slug}`} style={{ textDecoration: 'none' }}>
                 <div
@@ -93,7 +185,7 @@ export default async function ClubesPage() {
                   }}
                 >
                   <div style={{ height: '4px', background: '#004740', borderRadius: '24px 24px 0 0' }} />
-                  <div style={{ position: 'relative', height: '200px', overflow: 'hidden', background: CLUB_LOGO_STYLE[club.slug]?.bg ?? '#EBE9DF' }}>
+                  <div className="club-cover" style={{ position: 'relative', height: '200px', overflow: 'hidden', background: CLUB_LOGO_STYLE[club.slug]?.bg ?? '#EBE9DF' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={getClubCover(club.slug, club.logoUrl, club.coverUrl)}
@@ -110,25 +202,41 @@ export default async function ClubesPage() {
                       <span style={{ color: '#f59e0b', fontSize: '0.75rem' }}>★</span>
                       <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#34252F', fontFamily: 'var(--font-montserrat)' }}>4.9</span>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 px-4 py-3" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%)' }}>
-                      <span className="badge badge-racing" style={{ background: 'rgba(0,71,64,0.85)', color: '#FFFFFF', borderColor: 'transparent', fontSize: '0.6rem' }}>Club Pádel</span>
-                    </div>
+
                   </div>
-                  <div className="p-5">
-                    <h3 style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.1rem', fontWeight: 700, color: '#34252F', marginBottom: '0.5rem' }}>
+                  <div className="club-card-body p-5">
+                    <h3 className="text-sm md:text-[1.1rem]" style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, color: '#34252F', marginBottom: '0.4rem' }}>
                       {club.name}
                     </h3>
                     {club.address && (
-                      <div className="flex items-center gap-1.5 mb-3">
+                      <div className="hidden md:flex items-center gap-1.5 mb-3">
                         <MapPin size={13} color="rgba(52,37,47,0.45)" />
                         <span style={{ color: 'rgba(52,37,47,0.55)', fontSize: '0.825rem', fontFamily: 'var(--font-inter)' }}>{club.address}</span>
                       </div>
                     )}
-                    <div className="flex items-center justify-between mt-4">
+                    <div className="club-court-row flex items-center justify-between mt-4">
                       <span className="badge badge-racing">{club.courts.length} cancha{club.courts.length !== 1 ? 's' : ''}</span>
-                      <span style={{ color: '#AE552D', fontWeight: 700, fontSize: '0.875rem', fontFamily: 'var(--font-montserrat)' }}>
+                      <span className="club-reservar" style={{ color: '#AE552D', fontWeight: 700, fontSize: '0.875rem', fontFamily: 'var(--font-montserrat)' }}>
                         Reservar →
                       </span>
+                    </div>
+                    {/* Availability badge */}
+                    <div className="club-avail-row" style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(52,37,47,0.07)' }}>
+                      {club.hasAvailabilityToday ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#16a34a', flexShrink: 0, boxShadow: '0 0 0 2px rgba(22,163,74,0.2)' }} />
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, fontFamily: 'var(--font-montserrat)', color: '#16a34a', letterSpacing: '0.03em' }}>
+                            Hay horarios disponibles hoy
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'rgba(52,37,47,0.25)', flexShrink: 0 }} />
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, fontFamily: 'var(--font-montserrat)', color: 'rgba(52,37,47,0.35)', letterSpacing: '0.03em' }}>
+                            Sin horarios disponibles hoy
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
