@@ -31,15 +31,18 @@ model Club {
 }
 
 model Profile {
-  id              String       @id
+  id              String        @id
   clubId          String?
-  role            UserRole     @default(player)
+  role            UserRole      @default(player)
   fullName        String?
+  nickname        String?
   phone           String?
   avatarUrl       String?
-  isBlocked       Boolean      @default(false)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  courtPosition   CourtPosition?
+  playerLevel     PlayerLevel?
+  isBlocked       Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
   createdBookings Booking[]    @relation("CreatedByBookings")
   bookings        Booking[]    @relation("PlayerBookings")
   courtBlocks     CourtBlock[]
@@ -163,4 +166,21 @@ enum CourtSurface {
   cristal
   moqueta
   cemento
+}
+
+enum CourtPosition {
+  drive
+  reves
+  ambas
+}
+
+enum PlayerLevel {
+  avanzado
+  cuarta
+  quinta
+  sexta_mas
+  sexta
+  septima_mas
+  septima
+  octava
 }

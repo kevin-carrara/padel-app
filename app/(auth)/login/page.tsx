@@ -34,18 +34,21 @@ export default function LoginPage() {
     if (error) {
       toast.error('Credenciales incorrectas.')
     } else {
-      router.push('/dashboard')
+      router.push('/auth/home')
       router.refresh()
     }
   }
 
   async function handleGoogle(role: 'player' | 'club_admin') {
     setGoogleLoading(true)
+    // Store role in cookie so the callback can read it without needing query params
+    // (Supabase does exact URL matching — query params break the redirect allow-list)
+    document.cookie = `intended_role=${role}; path=/; max-age=300; SameSite=Lax`
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?role=${role}`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
     if (error) {

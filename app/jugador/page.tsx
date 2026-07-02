@@ -1,15 +1,8 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/db/prisma'
-import {
-  TennisBall,
-  Buildings,
-  Lightning,
-  CalendarBlank,
-  UserCircle,
-  HandWaving,
-} from '@phosphor-icons/react/dist/ssr'
+import { TennisBall, HandWaving } from '@phosphor-icons/react/dist/ssr'
+import { ActionGrid } from './ActionGrid'
 
 export default async function JugadorPage({
   searchParams,
@@ -23,15 +16,18 @@ export default async function JugadorPage({
 
   const profile = await prisma.profile.findUnique({
     where: { id: user.id },
-    select: { id: true, fullName: true, avatarUrl: true, role: true },
+    select: { id: true, fullName: true, nickname: true, avatarUrl: true, role: true, courtPosition: true, playerLevel: true },
   })
 
   if (!profile) redirect('/login')
   if (profile.role !== 'player') redirect('/dashboard')
 
+  const isComplete = !!(profile.nickname && profile.courtPosition && profile.playerLevel)
+  if (!isComplete) redirect('/jugador/onboarding')
+
   const params = await searchParams
   const isOnboarding = params.onboarding === '1'
-  const firstName = profile.fullName?.split(' ')[0] ?? 'Jugador'
+  const firstName = profile.nickname ?? profile.fullName?.split(' ')[0] ?? 'Jugador'
 
   return (
     <div
@@ -124,91 +120,7 @@ export default async function JugadorPage({
         </p>
 
         {/* Actions grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
-          <Link
-            href="/clubes"
-            style={{
-              background: '#004740',
-              borderRadius: '12px',
-              padding: 'clamp(1rem, 4vw, 1.5rem) clamp(0.875rem, 3vw, 1.25rem)',
-              textDecoration: 'none',
-              display: 'block',
-              minWidth: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <Buildings size={28} color="rgba(255,255,255,0.9)" weight="duotone" style={{ display: 'block', marginBottom: '0.6rem' }} />
-            <p style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 0.95rem)', marginBottom: '0.2rem' }}>
-              Ver clubes
-            </p>
-            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 'clamp(0.7rem, 2.5vw, 0.78rem)', lineHeight: 1.3 }}>
-              Explorá y reservá canchas
-            </p>
-          </Link>
-
-          <div
-            style={{
-              background: 'rgba(52,37,47,0.06)',
-              borderRadius: '12px',
-              padding: 'clamp(1rem, 4vw, 1.5rem) clamp(0.875rem, 3vw, 1.25rem)',
-              border: '1.5px dashed rgba(52,37,47,0.15)',
-              cursor: 'default',
-              opacity: 0.7,
-              minWidth: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <Lightning size={28} color="#34252F" weight="duotone" style={{ display: 'block', marginBottom: '0.6rem' }} />
-            <p style={{ color: '#34252F', fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 0.95rem)', marginBottom: '0.2rem' }}>
-              Partidos abiertos
-            </p>
-            <p style={{ color: 'rgba(52,37,47,0.45)', fontSize: 'clamp(0.7rem, 2.5vw, 0.78rem)' }}>
-              Próximamente
-            </p>
-          </div>
-
-          <div
-            style={{
-              background: 'rgba(52,37,47,0.06)',
-              borderRadius: '12px',
-              padding: 'clamp(1rem, 4vw, 1.5rem) clamp(0.875rem, 3vw, 1.25rem)',
-              border: '1.5px dashed rgba(52,37,47,0.15)',
-              cursor: 'default',
-              opacity: 0.7,
-              minWidth: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <CalendarBlank size={28} color="#34252F" weight="duotone" style={{ display: 'block', marginBottom: '0.6rem' }} />
-            <p style={{ color: '#34252F', fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 0.95rem)', marginBottom: '0.2rem' }}>
-              Mis reservas
-            </p>
-            <p style={{ color: 'rgba(52,37,47,0.45)', fontSize: 'clamp(0.7rem, 2.5vw, 0.78rem)' }}>
-              Próximamente
-            </p>
-          </div>
-
-          <div
-            style={{
-              background: 'rgba(52,37,47,0.06)',
-              borderRadius: '12px',
-              padding: 'clamp(1rem, 4vw, 1.5rem) clamp(0.875rem, 3vw, 1.25rem)',
-              border: '1.5px dashed rgba(52,37,47,0.15)',
-              cursor: 'default',
-              opacity: 0.7,
-              minWidth: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <UserCircle size={28} color="#34252F" weight="duotone" style={{ display: 'block', marginBottom: '0.6rem' }} />
-            <p style={{ color: '#34252F', fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 0.95rem)', marginBottom: '0.2rem' }}>
-              Mi perfil
-            </p>
-            <p style={{ color: 'rgba(52,37,47,0.45)', fontSize: 'clamp(0.7rem, 2.5vw, 0.78rem)' }}>
-              Próximamente
-            </p>
-          </div>
-        </div>
+        <ActionGrid />
 
         {/* Sign out */}
         <form action="/api/auth/signout" method="POST">

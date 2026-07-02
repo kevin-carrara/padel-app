@@ -52,10 +52,10 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect logged-in users away from auth pages
+  // Redirect logged-in users away from auth pages (role-aware via /auth/home)
   if ((pathname === '/login' || pathname === '/register') && user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = '/auth/home'
     return NextResponse.redirect(url)
   }
 

@@ -53,11 +53,12 @@ export default function RegisterPage() {
 
   async function handleGoogle() {
     setGoogleLoading(true)
+    document.cookie = `intended_role=player; path=/; max-age=300; SameSite=Lax`
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?role=player`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
     if (error) {

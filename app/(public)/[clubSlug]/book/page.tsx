@@ -31,9 +31,9 @@ export default async function PublicBookPage({
     <main className="min-h-screen" style={{ background: '#EBE9DF' }}>
       <nav style={{ background: '#004740' }}>
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
-          <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
+          <span className="logo text-xl" style={{ color: '#FFFFFF' }}>
             AJClubPadel
-          </Link>
+          </span>
           <Link
             href={`/${club.slug}`}
             style={{

@@ -18,6 +18,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect('/login')
   }
 
+  if (profile.role === 'player') redirect('/jugador')
+
   const club = profile.clubId ? await prisma.club.findUnique({ where: { id: profile.clubId }, select: { name: true, subscriptionStatus: true } }) : null
 
   const displayName = club?.name ?? user.user_metadata?.name ?? user.email ?? ''

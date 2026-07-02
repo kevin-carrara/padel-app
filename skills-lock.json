@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "app-store-screenshots": {
+      "source": "parthjadhav/app-store-screenshots",
+      "sourceType": "github",
+      "skillPath": "skills/app-store-screenshots/SKILL.md",
+      "computedHash": "961685350664744a2dff7a308602aab1986e841e68d58b4e48f3905ab38e002d"
+    },
     "frontend-design": {
       "source": "anthropics/claude-code",
       "sourceType": "github",
@@ -12,6 +18,12 @@
       "sourceType": "github",
       "skillPath": "skills/minimalist-skill/SKILL.md",
       "computedHash": "7e88897e0371184e97a82b8d9ef080323c13f21eb067b58ef71eb05173a08ac2"
+    },
+    "ux-designer": {
+      "source": "szilu/ux-designer-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "2e325d21c8abfaa08b6dbb5c1f2b9f27d3280c7c10f873e2d9e2648436c90633"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",

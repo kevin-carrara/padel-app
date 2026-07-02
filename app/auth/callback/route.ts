@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/db/prisma'
+import { getHomePathForRole } from '@/lib/auth/home-path'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/dashboard'
-  const roleParam = searchParams.get('role') // 'player' | 'club_admin' | null
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=no_code`)
@@ -33,13 +33,14 @@ export async function GET(request: Request) {
   })
 
   if (existingProfile) {
-    // Existing user — redirect by role
-    const destination = existingProfile.role === 'player' ? '/jugador' : '/dashboard'
-    return NextResponse.redirect(`${origin}${destination}`)
+    return NextResponse.redirect(`${origin}${getHomePathForRole(existingProfile.role)}`)
   }
 
-  // New user via Google OAuth — role from query param, default player
-  const role = roleParam === 'club_admin' ? 'club_admin' : 'player'
+  // New user — read intended role from cookie (set before OAuth redirect)
+  const cookieStore = await cookies()
+  const roleCookie = cookieStore.get('intended_role')?.value
+  const role = roleCookie === 'club_admin' ? 'club_admin' : 'player'
+
   const fullName = user.user_metadata?.full_name ?? user.user_metadata?.name ?? null
   const avatarUrl = user.user_metadata?.avatar_url ?? null
 
@@ -52,6 +53,6 @@ export async function GET(request: Request) {
     },
   })
 
-  const destination = role === 'player' ? '/jugador?onboarding=1' : '/dashboard?onboarding=1'
+  const destination = role === 'player' ? '/jugador?onboarding=1' : `${getHomePathForRole(role)}?onboarding=1`
   return NextResponse.redirect(`${origin}${destination}`)
 }

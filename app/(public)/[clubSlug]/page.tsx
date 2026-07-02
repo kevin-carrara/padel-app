@@ -43,7 +43,7 @@ export default async function ClubPublicPage({ params }: { params: Promise<{ clu
             <div className="flex items-center justify-center rounded-lg" style={{ width: '32px', height: '32px', background: '#AE552D', flexShrink: 0 }}>
               <Medal size={16} color="#FFFFFF" />
             </div>
-            <Link href="/" className="logo text-xl" style={{ color: '#FFFFFF', textDecoration: 'none' }}>AJClubPadel</Link>
+            <span className="logo text-xl" style={{ color: '#FFFFFF' }}>AJClubPadel</span>
           </div>
           <Link
             href="/clubes"
